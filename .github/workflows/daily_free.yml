@@ -1,0 +1,87 @@
+name: Daily philosophy episode (free)
+
+on:
+  schedule:
+    # 6:00 AM Santiago time = 09:00 UTC
+    - cron: "0 9 * * *"
+  workflow_dispatch:
+    inputs:
+      episode_number:
+        description: "Episode number (blank = next pending)"
+        required: false
+      dry_run:
+        description: "Script only, no audio (true/false)"
+        default: "false"
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      # Restore metadata so we know which episodes are done
+      - name: Restore metadata from previous run
+        uses: actions/cache@v4
+        with:
+          path: episodes/metadata.json
+          key: podcast-metadata-${{ github.run_number }}
+          restore-keys: podcast-metadata-
+
+      - name: Generate episode
+        env:
+          GEMINI_API_KEY:   ${{ secrets.GEMINI_API_KEY }}
+          GOOGLE_TTS_KEY:   ${{ secrets.GOOGLE_TTS_KEY }}
+        run: |
+          mkdir -p episodes
+          ARGS=""
+          [ -n "${{ github.event.inputs.episode_number }}" ] && ARGS="--episode ${{ github.event.inputs.episode_number }}"
+          [ "${{ github.event.inputs.dry_run }}" = "true" ]  && ARGS="$ARGS --dry-run"
+          python generate_episode_free.py $ARGS
+
+      # Upload MP3 + feed.xml as a GitHub release asset (free public hosting)
+      - name: Upload audio as release asset
+        if: ${{ github.event.inputs.dry_run != 'true' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Create or update a rolling "episodes" release
+          gh release create episodes-latest \
+            --title "Latest Episodes" \
+            --notes "Auto-generated philosophy podcast episodes" \
+            --prerelease 2>/dev/null || true
+
+          # Upload the new MP3
+          for f in episodes/ep*.mp3; do
+            gh release upload episodes-latest "$f" --clobber 2>/dev/null || true
+          done
+
+          # Upload feed.xml
+          gh release upload episodes-latest feed.xml --clobber
+
+          echo "✓ Uploaded to GitHub Releases"
+          echo "Feed URL: https://github.com/${{ github.repository }}/releases/download/episodes-latest/feed.xml"
+
+      - name: Save metadata cache
+        if: always()
+        uses: actions/cache@v4
+        with:
+          path: episodes/metadata.json
+          key: podcast-metadata-${{ github.run_number }}
+
+      - name: Summary
+        run: |
+          echo "## Episode generated" >> $GITHUB_STEP_SUMMARY
+          ls -lh episodes/*.mp3 2>/dev/null >> $GITHUB_STEP_SUMMARY || true
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Feed RSS:** \`https://github.com/${{ github.repository }}/releases/download/episodes-latest/feed.xml\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Submit this URL to [creators.spotify.com](https://creators.spotify.com) to publish on Spotify." >> $GITHUB_STEP_SUMMARY
