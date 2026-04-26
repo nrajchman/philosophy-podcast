@@ -235,8 +235,8 @@ Audio prose only. No markdown."""
 def generate_script(episode: dict) -> str:
     print(f"  → Generating script with Gemini for: {episode['title']}")
 
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
-
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
+    
     payload = {
         "system_instruction": {
             "parts": [{"text": "You are a world-class podcast scriptwriter specializing in philosophy for business professionals. You write in flowing, natural prose designed to be read aloud. Never use bullet points, headers, or markdown formatting. Write only the script itself, nothing else."}]
