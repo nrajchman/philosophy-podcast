@@ -245,8 +245,14 @@ def generate_script(episode: dict) -> str:
         "generationConfig": {"temperature": 0.8, "maxOutputTokens": 8192}
     }
 
-    resp = requests.post(url, json=payload, timeout=120)
-    resp.raise_for_status()
+    for attempt in range(3):
+        resp = requests.post(url, json=payload, timeout=120)
+        if resp.status_code == 429:
+            print(f"  Rate limit hit, waiting 60s (attempt {attempt+1}/3)...")
+            time.sleep(60)
+            continue
+        resp.raise_for_status()
+        break
     data = resp.json()
     return data["candidates"][0]["content"]["parts"][0]["text"]
 
