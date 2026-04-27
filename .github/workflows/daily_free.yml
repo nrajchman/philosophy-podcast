@@ -38,15 +38,15 @@ jobs:
 
       - name: Generate episode
         env:
-          GEMINI_API_KEY:   ${{ secrets.GEMINI_API_KEY }}
-          GOOGLE_TTS_KEY:   ${{ secrets.GOOGLE_TTS_KEY }}
+          GROQ_API_KEY:    ${{ secrets.GROQ_API_KEY }}
+          GOOGLE_TTS_KEY:  ${{ secrets.GOOGLE_TTS_KEY }}
         run: |
           mkdir -p episodes
           ARGS=""
           [ -n "${{ github.event.inputs.episode_number }}" ] && ARGS="--episode ${{ github.event.inputs.episode_number }}"
           [ "${{ github.event.inputs.dry_run }}" = "true" ]  && ARGS="$ARGS --dry-run"
           python generate_episode_free.py $ARGS
-
+          
       # Upload MP3 + feed.xml as a GitHub release asset (free public hosting)
       - name: Upload audio as release asset
         if: ${{ github.event.inputs.dry_run != 'true' }}
