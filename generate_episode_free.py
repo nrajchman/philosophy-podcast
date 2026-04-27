@@ -233,35 +233,33 @@ Audio prose only. No markdown."""
 # ── Script generation (Gemini — free) ────────────────────────────────────────
 
 def generate_script(episode: dict) -> str:
-    print(f"  → Generating script with Gemini for: {episode['title']}")
+    print(f"  → Generating script with Groq for: {episode['title']}")
 
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key={GEMINI_API_KEY}"
-
-    payload = {
-        "system_instruction": {
-            "parts": [{"text": "You are a world-class podcast scriptwriter specializing in philosophy for business professionals. You write in flowing, natural prose designed to be read aloud. Never use bullet points, headers, or markdown formatting. Write only the script itself, nothing else."}]
+    resp = requests.post(
+        "https://api.groq.com/openai/v1/chat/completions",
+        headers={
+            "Authorization": f"Bearer {os.environ.get('GROQ_API_KEY', '')}",
+            "Content-Type": "application/json"
         },
-        "contents": [{"parts": [{"text": episode["prompt"]}]}],
-        "generationConfig": {"temperature": 0.8, "maxOutputTokens": 8192}
-    }
-
-    wait_times = [30, 60, 120]
-    for attempt in range(3):
-        resp = requests.post(url, json=payload, timeout=120)
-        if resp.status_code == 429:
-            wait = wait_times[attempt]
-            print(f"  Rate limit hit, waiting {wait}s (attempt {attempt+1}/3)...")
-            time.sleep(wait)
-            continue
-        resp.raise_for_status()
-        break
-    else:
-        print(f"  API response: {resp.text[:500]}")
-        resp.raise_for_status()
-
-    data = resp.json()
-    return data["candidates"][0]["content"]["parts"][0]["text"]
-
+        json={
+            "model": "llama-3.3-70b-versatile",
+            "max_tokens": 8192,
+            "temperature": 0.8,
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are a world-class podcast scriptwriter specializing in philosophy for business professionals. Write in flowing natural prose for audio. Never use bullet points, headers, or markdown. Write only the script itself."
+                },
+                {
+                    "role": "user",
+                    "content": episode["prompt"]
+                }
+            ]
+        },
+        timeout=120
+    )
+    resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
 def parse_sections(raw: str) -> dict:
     parts = [p.strip() for p in raw.split("---SECTION---") if p.strip()]
     return {
@@ -436,8 +434,8 @@ if __name__ == "__main__":
     p.add_argument("--dry-run", action="store_true")
     args = p.parse_args()
 
-    if not GEMINI_API_KEY:
-        sys.exit("✗ Missing GEMINI_API_KEY")
+    if not os.environ.get("GROQ_API_KEY"):
+        sys.exit("✗ Missing GROQ_API_KEY")
     if not args.dry_run and not GOOGLE_TTS_KEY:
         sys.exit("✗ Missing GOOGLE_TTS_KEY")
 
