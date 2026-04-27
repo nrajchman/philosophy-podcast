@@ -235,8 +235,8 @@ Audio prose only. No markdown."""
 def generate_script(episode: dict) -> str:
     print(f"  → Generating script with Gemini for: {episode['title']}")
 
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
-    
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key={GEMINI_API_KEY}"
+
     payload = {
         "system_instruction": {
             "parts": [{"text": "You are a world-class podcast scriptwriter specializing in philosophy for business professionals. You write in flowing, natural prose designed to be read aloud. Never use bullet points, headers, or markdown formatting. Write only the script itself, nothing else."}]
@@ -245,17 +245,22 @@ def generate_script(episode: dict) -> str:
         "generationConfig": {"temperature": 0.8, "maxOutputTokens": 8192}
     }
 
+    wait_times = [30, 60, 120]
     for attempt in range(3):
         resp = requests.post(url, json=payload, timeout=120)
         if resp.status_code == 429:
-            print(f"  Rate limit hit, waiting 60s (attempt {attempt+1}/3)...")
-            time.sleep(60)
+            wait = wait_times[attempt]
+            print(f"  Rate limit hit, waiting {wait}s (attempt {attempt+1}/3)...")
+            time.sleep(wait)
             continue
         resp.raise_for_status()
         break
+    else:
+        print(f"  API response: {resp.text[:500]}")
+        resp.raise_for_status()
+
     data = resp.json()
     return data["candidates"][0]["content"]["parts"][0]["text"]
-
 
 def parse_sections(raw: str) -> dict:
     parts = [p.strip() for p in raw.split("---SECTION---") if p.strip()]
