@@ -53,23 +53,25 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Create or update a rolling "episodes" release
+          # Delete and recreate the release to avoid conflicts
+          gh release delete episodes-latest --yes 2>/dev/null || true
+
+          # Create fresh release
           gh release create episodes-latest \
             --title "Latest Episodes" \
             --notes "Auto-generated philosophy podcast episodes" \
-            --prerelease 2>/dev/null || true
+            --prerelease
 
-          # Upload the new MP3
+          # Upload all MP3s
           for f in episodes/ep*.mp3; do
-            gh release upload episodes-latest "$f" --clobber 2>/dev/null || true
+            [ -f "$f" ] && gh release upload episodes-latest "$f"
           done
 
           # Upload feed.xml
-          gh release upload episodes-latest feed.xml --clobber
+          [ -f feed.xml ] && gh release upload episodes-latest feed.xml
 
-          echo "✓ Uploaded to GitHub Releases"
+          echo "✓ Upload complete"
           echo "Feed URL: https://github.com/${{ github.repository }}/releases/download/episodes-latest/feed.xml"
-
       - name: Save metadata cache
         if: always()
         uses: actions/cache@v4
