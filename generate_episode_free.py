@@ -247,9 +247,19 @@ def generate_script(episode: dict) -> str:
             "temperature": 0.8,
             "messages": [
                 {
+                    
                     "role": "system",
-                    "content": "You are a world-class podcast scriptwriter specializing in philosophy for business professionals. Write in flowing natural prose for audio. Never use bullet points, headers, or markdown. Write only the script itself."
-                },
+                    "content": """You are a world-class podcast scriptwriter specializing in philosophy for business professionals. 
+
+CRITICAL REQUIREMENTS:
+- Scripts must be 3,500 to 4,000 words minimum. This is non-negotiable.
+- A 20-minute podcast at normal speaking pace requires approximately 3,500 words.
+- Write in flowing natural prose designed to be read aloud.
+- Never use bullet points, headers, or markdown formatting.
+- Write only the script itself, nothing else.
+- Develop each idea fully with examples, analogies, and stories. Do not rush.
+- Each section must be substantial: INTRO at least 400 words, DEVELOPMENT at least 2,800 words, CLOSE at least 400 words."""
+                                },
                 {
                     "role": "user",
                     "content": episode["prompt"]
