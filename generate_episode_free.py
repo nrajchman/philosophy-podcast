@@ -42,7 +42,7 @@ TTS_PITCH        = -1.5    # slightly lower pitch = more gravitas
 PODCAST_TITLE    = "Philosophy for Life"
 PODCAST_DESC     = "A daily philosophy podcast for professionals: stoicism, existentialism, and the great thinkers applied to modern life. MBA-level depth, conversational tone."
 PODCAST_AUTHOR   = "Philosophy for Life"
-PODCAST_EMAIL    = "n.rajchman@email.com"           # ← change this
+PODCAST_EMAIL    = "n.rajchman@gmail.com"           # ← change this
 PODCAST_BASE_URL = "https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest"  # ← change to your public URL
 PODCAST_IMAGE    = f"{PODCAST_BASE_URL}/cover.jpg"
 PODCAST_LANGUAGE = "en"
