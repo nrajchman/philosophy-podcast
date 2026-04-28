@@ -3,7 +3,7 @@ name: Daily philosophy episode (free)
 on:
   schedule:
     # 6:00 AM Santiago time = 09:00 UTC
-    - cron: "0 9 * * *"
+    - cron: "0 11 * * *"
   workflow_dispatch:
     inputs:
       episode_number:
