@@ -2,21 +2,17 @@ name: Daily philosophy episode (free)
 
 on:
   schedule:
-    # 6:00 AM Santiago time = 09:00 UTC
     - cron: "0 11 * * *"
   workflow_dispatch:
     inputs:
       episode_number:
         description: "Episode number (blank = next pending)"
         required: false
-      dry_run:
-        description: "Script only, no audio (true/false)"
-        default: "false"
 
 jobs:
   generate:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
 
     steps:
       - uses: actions/checkout@v4
@@ -28,50 +24,29 @@ jobs:
       - name: Install dependencies
         run: pip install requests
 
-      # Restore metadata so we know which episodes are done
-      - name: Restore metadata from previous run
+      - name: Restore metadata
         uses: actions/cache@v4
         with:
           path: episodes/metadata.json
           key: podcast-metadata-${{ github.run_number }}
           restore-keys: podcast-metadata-
 
-      - name: Generate episode
+      - name: Generate script only
         env:
-          GROQ_API_KEY:    ${{ secrets.GROQ_API_KEY }}
-          GOOGLE_TTS_KEY:  ${{ secrets.GOOGLE_TTS_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: |
           mkdir -p episodes
-          ARGS=""
-          [ -n "${{ github.event.inputs.episode_number }}" ] && ARGS="--episode ${{ github.event.inputs.episode_number }}"
-          [ "${{ github.event.inputs.dry_run }}" = "true" ]  && ARGS="$ARGS --dry-run"
+          ARGS="--dry-run"
+          [ -n "${{ github.event.inputs.episode_number }}" ] && ARGS="$ARGS --episode ${{ github.event.inputs.episode_number }}"
           python generate_episode_free.py $ARGS
-          
-      # Upload MP3 + feed.xml as a GitHub release asset (free public hosting)
-      - name: Upload audio as release asset
-        if: ${{ github.event.inputs.dry_run != 'true' }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # Delete and recreate the release to avoid conflicts
-          gh release delete episodes-latest --yes 2>/dev/null || true
 
-          # Create fresh release
-          gh release create episodes-latest \
-            --title "Latest Episodes" \
-            --notes "Auto-generated philosophy podcast episodes" \
-            --prerelease
+      - name: Upload script as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: episode-script
+          path: episodes/*.txt
+          retention-days: 7
 
-          # Upload all MP3s
-          for f in episodes/ep*.mp3; do
-            [ -f "$f" ] && gh release upload episodes-latest "$f"
-          done
-
-          # Upload feed.xml
-          [ -f feed.xml ] && gh release upload episodes-latest feed.xml
-
-          echo "✓ Upload complete"
-          echo "Feed URL: https://github.com/${{ github.repository }}/releases/download/episodes-latest/feed.xml"
       - name: Save metadata cache
         if: always()
         uses: actions/cache@v4
@@ -81,9 +56,12 @@ jobs:
 
       - name: Summary
         run: |
-          echo "## Episode generated" >> $GITHUB_STEP_SUMMARY
-          ls -lh episodes/*.mp3 2>/dev/null >> $GITHUB_STEP_SUMMARY || true
+          echo "## Script generated" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Feed RSS:** \`https://github.com/${{ github.repository }}/releases/download/episodes-latest/feed.xml\`" >> $GITHUB_STEP_SUMMARY
+          echo "Download the script from the Artifacts section above." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Submit this URL to [creators.spotify.com](https://creators.spotify.com) to publish on Spotify." >> $GITHUB_STEP_SUMMARY
+          echo "**Next steps:**" >> $GITHUB_STEP_SUMMARY
+          echo "1. Download the .txt file from Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "2. Paste it in [notebooklm.google.com](https://notebooklm.google.com)" >> $GITHUB_STEP_SUMMARY
+          echo "3. Generate Audio Overview" >> $GITHUB_STEP_SUMMARY
+          echo "4. Download MP3 and upload to [creators.spotify.com](https://creators.spotify.com)" >> $GITHUB_STEP_SUMMARY
