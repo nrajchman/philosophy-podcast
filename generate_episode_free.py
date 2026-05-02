@@ -1,325 +1,284 @@
 #!/usr/bin/env python3
 """
 Philosophy Podcast — 100% Free Pipeline
-Gemini (script) → Google Cloud TTS WaveNet (audio) → Spotify for Creators (publish)
-Automated daily via GitHub Actions. Zero cost.
-
-Requirements:
-    pip install google-generativeai google-cloud-texttospeech requests
-
-Environment variables:
-    GEMINI_API_KEY        → free at aistudio.google.com
-    GOOGLE_TTS_KEY        → free tier at console.cloud.google.com (1M chars/month free)
-    SPOTIFY_EMAIL         → your Spotify for Creators login
-    SPOTIFY_PASSWORD      → your Spotify for Creators password
+Groq (script) -> Edge TTS (audio) -> GitHub Releases (hosting)
 """
 
 import os
 import sys
 import json
-import time
+import asyncio
 import argparse
 import requests
 from pathlib import Path
 from datetime import datetime, timezone
 
 # ── Config ────────────────────────────────────────────────────────────────────
-GEMINI_API_KEY   = os.environ.get("GEMINI_API_KEY", "")
-GOOGLE_TTS_KEY   = os.environ.get("GOOGLE_TTS_KEY", "")
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 
-OUTPUT_DIR  = Path("./episodes")
-RSS_FILE    = Path("./feed.xml")
-META_FILE   = OUTPUT_DIR / "metadata.json"
+OUTPUT_DIR = Path("./episodes")
+RSS_FILE   = Path("./feed.xml")
+META_FILE  = OUTPUT_DIR / "metadata.json"
 
-# Google Cloud TTS — best free male voice in English
-# en-US-Wavenet-D = deep, authoritative male voice (academic tone)
-TTS_VOICE        = "en-US-Wavenet-D"
-TTS_LANGUAGE     = "en-US"
-TTS_SPEAKING_RATE = 0.95   # slightly slower = more deliberate, academic feel
-TTS_PITCH        = -1.5    # slightly lower pitch = more gravitas
-
-# Podcast metadata (used in feed.xml for Spotify)
 PODCAST_TITLE    = "Philosophy for Life"
-PODCAST_DESC     = "A daily philosophy podcast for professionals: stoicism, existentialism, and the great thinkers applied to modern life. MBA-level depth, conversational tone."
+PODCAST_DESC     = "Un podcast de filosofía para adultos intelectualmente curiosos: estoicismo, existencialismo y los grandes pensadores aplicados a la vida moderna."
 PODCAST_AUTHOR   = "Philosophy for Life"
-PODCAST_EMAIL    = "your@email.com"           # ← change this
-PODCAST_BASE_URL = "https://your-domain.com"  # ← change to your public URL
-PODCAST_IMAGE    = f"{PODCAST_BASE_URL}/cover.jpg"
-PODCAST_LANGUAGE = "en"
+PODCAST_EMAIL    = "n.rajchman@gmail.com"
+PODCAST_BASE_URL = "https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest"
+PODCAST_IMAGE    = "https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/cover.jpg"
+PODCAST_LANGUAGE = "es"
 
 # ── Episode plan ──────────────────────────────────────────────────────────────
 EPISODES = [
     {
-        "number": 1, "week": "W1",
-        "title": "Socrates: The Unexamined Life Is Not Worth Living",
-        "prompt": """Write a 20-minute podcast script about Socrates as a model of philosophical life.
+        "number": 1, "week": "S1",
+        "title": "Sócrates: La vida sin examen no merece vivirse",
+        "prompt": """Escribe un guión de podcast de 20 minutos sobre Sócrates como modelo de vida filosófica.
 
-Audience: professionals aged 30-40 with MBA backgrounds. They're time-poor, results-driven, and want ideas that actually change how they live and lead — not academic theory.
+Audiencia: egresados universitarios de 30-40 años con formación avanzada. Leen mucho, piensan profundamente y quieren filosofía que los desafíe — no resúmenes simplificados. Les atraen las ideas por sí mismas.
 
-Tone: Like a brilliant colleague giving you the most interesting talk of your week. Conversational, direct, intellectually rigorous but never dry. American English.
+Tono: Como un profesor brillante y apasionado en un seminario íntimo. Riguroso pero cálido. Sin lenguaje corporativo, sin analogías de negocios.
 
-Connect Socratic ideas to: leadership blind spots, the gap between stated and actual values, how high performers delude themselves about what matters, the courage to ask hard questions in corporate settings.
+Explora: la vida examinada, el método socrático, el autoconocimiento como práctica radical, la virtud como conocimiento. La paradoja de la ignorancia socrática. Por qué Atenas lo mató y qué dice eso sobre la relación entre filosofía y sociedad.
 
-Structure (separate each section with the exact marker ---SECTION---):
+Estructura (separa con ---SECTION---):
+INTRO (600 palabras mínimo): Abre con una pregunta provocadora o paradoja.
+DESARROLLO (3000 palabras mínimo): Desarrolla las ideas con profundidad y matices, conexiones entre pensadores, tensiones no resueltas.
+CIERRE (400 palabras mínimo): Deja al oyente con una pregunta abierta, no una respuesta definitiva.
 
-INTRO (2 min): A sharp hook — place us in a scene or tension. Why does Socrates matter RIGHT NOW to someone running a team or building a career?
-
-DEVELOPMENT (15 min): Cover the Socratic method, self-knowledge (not the cliché, the radical version), virtue as knowledge, and the examined life. Weave in concrete examples from professional life — board meetings, performance reviews, career inflection points. At least 2 vivid analogies.
-
-CLOSE (3 min): A synthesis + one transformative question for the listener to sit with this week + one concrete practice they can do TODAY.
-
-Write for audio: no bullet points, no headers, no markdown. Pure flowing prose that sounds natural when read aloud. Vary sentence length. Use rhetorical questions."""
+Solo prosa fluida para audio. Sin bullets, sin títulos, sin markdown."""
     },
     {
-        "number": 2, "week": "W1",
-        "title": "Self-Knowledge: The Most Underrated Executive Skill",
-        "prompt": """Write a 20-minute podcast script on Socratic self-knowledge as a professional superpower.
+        "number": 2, "week": "S1",
+        "title": "El autoconocimiento: la demanda filosófica más radical",
+        "prompt": """Escribe un guión de podcast de 20 minutos sobre el autoconocimiento como problema filosófico.
 
-Audience: MBA-level professionals 30-40. Connect 'know thyself' to: cognitive biases in business decisions, the self-deception patterns of high achievers, the gap between leadership identity and actual behavior, what makes some executives grow and others plateau.
+Desde el oráculo de Delfos hasta Freud, la exigencia de 'conócete a ti mismo' ha obsesionado al pensamiento occidental. ¿Es posible el autoconocimiento genuino? Explora la versión socrática, la estoica y el desafío moderno del psicoanálisis y las ciencias cognitivas. Incluye a Montaigne, la crítica de Nietzsche a la introspección y la disolución budista del yo.
 
-Reference real psychological concepts (Dunning-Kruger, confirmation bias, identity-protective cognition) without being academic.
-
-Structure (separate with ---SECTION---): INTRO (2 min) / DEVELOPMENT (15 min) / CLOSE (3 min) with weekly practice.
-
-Write for audio only. No markdown."""
+Estructura (separa con ---SECTION---):
+INTRO (600 palabras) / DESARROLLO (3000 palabras) / CIERRE (400 palabras).
+Solo prosa para audio. Sin markdown."""
     },
     {
-        "number": 3, "week": "W2",
-        "title": "Epicurus: Why Everything You're Chasing Might Be Wrong",
-        "prompt": """Write a 20-minute podcast script on Epicurus and genuine wellbeing for ambitious professionals.
+        "number": 3, "week": "S2",
+        "title": "Epicuro: El filósofo del placer malentendido",
+        "prompt": """Escribe un guión de podcast de 20 minutos sobre Epicuro y la filosofía del placer.
 
-Audience: MBAs 30-40 who've hit many of their goals and feel something's off. Connect Epicurean pleasure classification (necessary/unnecessary/empty) to: lifestyle inflation, hedonic adaptation, the research on money and happiness (cite Kahneman, Killingsworth), what actually predicts life satisfaction vs. what professionals pursue.
+Epicuro es casi universalmente malinterpretado como hedonista. Reconstruye su posición real: la taxonomía de los placeres, la ataraxia como bien supremo, el papel de la amistad, el argumento contra el miedo a la muerte. Explora la tensión entre el retiro epicúreo de la vida pública y nuestra idea moderna de compromiso cívico.
 
-Structure (separate with ---SECTION---): INTRO (2 min) / DEVELOPMENT (15 min) / CLOSE (3 min) with practice.
-
-Audio prose only. No markdown."""
+Estructura (separa con ---SECTION---):
+INTRO (600 palabras) / DESARROLLO (3000 palabras) / CIERRE (400 palabras).
+Solo prosa para audio. Sin markdown."""
     },
     {
-        "number": 4, "week": "W2",
-        "title": "The Philosophy of Enough: Strategic Simplicity",
-        "prompt": """Write a 20-minute podcast script on philosophical simplicity as strategic advantage.
+        "number": 4, "week": "S2",
+        "title": "La filosofía de la simplicidad: vivir con menos como acto radical",
+        "prompt": """Escribe un guión de podcast de 20 minutos sobre la tradición filosófica de la simplicidad voluntaria.
 
-Audience: MBA professionals 30-40 prone to overcommitment and optimization addiction. Connect Epicurus and the Cynics to: essentialism in career design, the hidden costs of accumulation, the decision fatigue research, Warren Buffett's 'not-to-do list' strategy, Cal Newport's digital minimalism.
+Desde Diógenes viviendo en un barril hasta Thoreau en Walden, una corriente del pensamiento occidental ha argumentado que la civilización misma es el problema. Explora la crítica cínica de las convenciones, la simplicidad epicúrea, la indiferencia estoica a los bienes externos y el experimento de vida deliberada de Thoreau. ¿Es la simplicidad voluntaria una posición filosófica genuina o un lujo de los privilegiados?
 
-Structure (separate with ---SECTION---): INTRO (2 min) / DEVELOPMENT (15 min) / CLOSE (3 min) with practice.
-
-Audio prose only. No markdown."""
+Estructura (separa con ---SECTION---):
+INTRO (600 palabras) / DESARROLLO (3000 palabras) / CIERRE (400 palabras).
+Solo prosa para audio. Sin markdown."""
     },
     {
-        "number": 5, "week": "W3",
-        "title": "Epictetus: Stop Managing What You Can't Control",
-        "prompt": """Write a 20-minute podcast script on the Stoic dichotomy of control for leaders.
+        "number": 5, "week": "S3",
+        "title": "Epicteto: La libertad en cadenas",
+        "prompt": """Escribe un guión de podcast de 20 minutos sobre Epicteto y la concepción estoica de la libertad.
 
-Audience: MBA professionals 30-40 managing teams, outcomes, and stakeholder expectations. Connect Epictetus's core distinction to: stress management research, the OKR framework (inputs vs. outcomes), how top performers separate signal from noise, reacting to market volatility, dealing with unfair feedback.
+Epicteto fue un esclavo que se convirtió en uno de los filósofos más influyentes del mundo antiguo. Su idea central — que la libertad es interior, no exterior — es a la vez liberadora y profundamente perturbadora. Explora la dicotomía del control en profundidad, su conexión con la física y cosmología estoica, y sus límites. ¿Es la libertad estoica una liberación genuina o una forma sofisticada de resignación?
 
-Mention the connection to modern CBT — this isn't just philosophy, it's evidence-based cognitive science.
-
-Structure (separate with ---SECTION---): INTRO (2 min) / DEVELOPMENT (15 min) / CLOSE (3 min) with a weekly drill.
-
-Audio prose only. No markdown."""
+Estructura (separa con ---SECTION---):
+INTRO (600 palabras) / DESARROLLO (3000 palabras) / CIERRE (400 palabras).
+Solo prosa para audio. Sin markdown."""
     },
     {
-        "number": 6, "week": "W3",
-        "title": "Stoic Emotions: Feel Everything, Be Ruled by Nothing",
-        "prompt": """Write a 20-minute podcast script on the Stoic theory of emotions for high-pressure professionals.
+        "number": 6, "week": "S3",
+        "title": "Las emociones estoicas: la filosofía del clima interior",
+        "prompt": """Escribe un guión de podcast de 20 minutos sobre la teoría estoica de las emociones.
 
-Audience: MBAs 30-40 making decisions under emotional load — negotiations, layoffs, investor pressure. Connect Stoic emotion theory (passions as false judgments, eupatheiai as healthy states) to: emotional intelligence in leadership, the neuroscience of decision-making under stress (Damasio's somatic marker hypothesis), why the best negotiators control framing not feelings.
+Los estoicos argumentaban que las emociones no son cosas que nos suceden sino juicios que hacemos — y por tanto están bajo nuestro control. Explora esta tesis radical: la distinción entre pasiones y eupatheiai, el papel del asentimiento en la experiencia emocional. ¿Es la visión estoica psicológicamente realista? Explora la tensión entre la disciplina emocional estoica y el valor del sentimiento genuino.
 
-Structure (separate with ---SECTION---): INTRO (2 min) / DEVELOPMENT (15 min) / CLOSE (3 min) with practice.
-
-Audio prose only. No markdown."""
+Estructura (separa con ---SECTION---):
+INTRO (600 palabras) / DESARROLLO (3000 palabras) / CIERRE (400 palabras).
+Solo prosa para audio. Sin markdown."""
     },
     {
-        "number": 7, "week": "W4",
-        "title": "Marcus Aurelius: Leading When Nobody's Watching",
-        "prompt": """Write a 20-minute podcast script on Marcus Aurelius as a model of leadership philosophy.
+        "number": 7, "week": "S4",
+        "title": "Marco Aurelio: la filosofía como forma de vida",
+        "prompt": """Escribe un guión de podcast de 20 minutos sobre Marco Aurelio y las Meditaciones.
 
-Audience: MBA professionals 30-40 in leadership roles or aspiring to them. Connect the Meditations to: the loneliness of command, managing ego at the top, making decisions with incomplete information, maintaining ethical clarity under institutional pressure. The Meditations as a personal management system, not just philosophy.
+Las Meditaciones son únicas en la literatura filosófica: notas privadas nunca destinadas a publicarse, escritas por el hombre más poderoso del mundo como disciplina de autoexamen. Explora qué tipo de texto son, cómo funcionan como ejercicio espiritual y qué revelan sobre el estoicismo como práctica vivida. Los temas recurrentes: la impermanencia, la pequeñez de los asuntos humanos, la unidad de la naturaleza racional.
 
-Structure (separate with ---SECTION---): INTRO (2 min) / DEVELOPMENT (15 min) / CLOSE (3 min) with the practice of journaling as a leadership tool.
-
-Audio prose only. No markdown."""
+Estructura (separa con ---SECTION---):
+INTRO (600 palabras) / DESARROLLO (3000 palabras) / CIERRE (400 palabras).
+Solo prosa para audio. Sin markdown."""
     },
     {
-        "number": 8, "week": "W4",
-        "title": "Seneca: Your Time Is the Only Asset That Doesn't Compound",
-        "prompt": """Write a 20-minute podcast script on Seneca's 'On the Shortness of Life' for modern professionals.
+        "number": 8, "week": "S4",
+        "title": "Séneca: Sobre la brevedad de la vida",
+        "prompt": """Escribe un guión de podcast de 20 minutos sobre la filosofía del tiempo y la mortalidad de Séneca.
 
-Audience: MBAs 30-40 who feel their calendar runs their life. Connect Seneca to: purposeful productivity vs. anxiety-driven busyness, the research on attention residue and deep work (Cal Newport), designing protected time in a corporate calendar, memento mori as a prioritization tool (what would you do differently?).
+El ensayo de Séneca es uno de los textos más urgentes de la filosofía occidental. Explora su argumento central — que la vida no es corta, simplemente la desperdiciamos — y sus implicaciones. Examina la tensión en el corazón de la vida de Séneca: un filósofo estoico que era enormemente rico y cómplice en la corte de Nerón. ¿Invalida esta contradicción su filosofía o la hace más interesante?
 
-Structure (separate with ---SECTION---): INTRO (2 min) / DEVELOPMENT (15 min) / CLOSE (3 min) with a time audit practice.
-
-Audio prose only. No markdown."""
+Estructura (separa con ---SECTION---):
+INTRO (600 palabras) / DESARROLLO (3000 palabras) / CIERRE (400 palabras).
+Solo prosa para audio. Sin markdown."""
     },
     {
-        "number": 9, "week": "W5",
-        "title": "Nietzsche: When the Map Breaks, How Do You Navigate?",
-        "prompt": """Write a 20-minute podcast script on Nietzsche and value creation for professionals in transition.
+        "number": 9, "week": "S5",
+        "title": "Nietzsche: La muerte de Dios y la crisis de los valores",
+        "prompt": """Escribe un guión de podcast de 20 minutos sobre el diagnóstico de Nietzsche de la modernidad.
 
-Audience: MBAs 30-40 experiencing career pivots, identity crises, or questioning whether their current path is really theirs. Connect the death of God (as a metaphor for any collapsed meaning system — a company, an industry, an identity) to: the psychology of career reinvention, nihilism as a phase vs. a destination, will to power as creative self-authorship rather than dominance.
+La muerte de Dios no es una afirmación teológica sino un diagnóstico cultural: el colapso del marco metafísico que dio a la civilización occidental sus valores, sentido y coherencia. Explora qué quiere decir Nietzsche, por qué cree que es inevitable y cuáles ve como sus consecuencias: el nihilismo, el último hombre, la posibilidad de la transvaloración. ¿Cómo se relaciona esto con nuestro momento cultural actual?
 
-Structure (separate with ---SECTION---): INTRO (2 min) / DEVELOPMENT (15 min) / CLOSE (3 min) with practice.
-
-Audio prose only. No markdown."""
+Estructura (separa con ---SECTION---):
+INTRO (600 palabras) / DESARROLLO (3000 palabras) / CIERRE (400 palabras).
+Solo prosa para audio. Sin markdown."""
     },
     {
-        "number": 10, "week": "W5",
-        "title": "The Eternal Return: Would You Live This Life Again?",
-        "prompt": """Write a 20-minute podcast script on Nietzsche's eternal return as a decision-making framework.
+        "number": 10, "week": "S5",
+        "title": "El eterno retorno: el pensamiento más pesado de Nietzsche",
+        "prompt": """Escribe un guión de podcast de 20 minutos sobre la doctrina del eterno retorno de Nietzsche.
 
-Audience: MBAs 30-40 making consequential decisions — career moves, relationships, big bets. Connect the eternal return thought experiment to: Jeff Bezos's regret minimization framework, how to evaluate irreversible decisions, amor fati as a strategy for integrating past choices, the difference between regret (useful) and rumination (destructive).
+Nietzsche llamó al eterno retorno su 'pensamiento más pesado': la idea de que todo lo que ha sucedido sucederá de nuevo, infinitamente. Explora las múltiples dimensiones de esta idea: como hipótesis cosmológica, como experimento mental, como criterio ético (amor fati) y como respuesta al nihilismo. ¿Por qué Nietzsche cree que es la idea más difícil que un ser humano puede afirmar?
 
-Structure (separate with ---SECTION---): INTRO (2 min) / DEVELOPMENT (15 min) / CLOSE (3 min) with the eternal return exercise.
-
-Audio prose only. No markdown."""
+Estructura (separa con ---SECTION---):
+INTRO (600 palabras) / DESARROLLO (3000 palabras) / CIERRE (400 palabras).
+Solo prosa para audio. Sin markdown."""
     },
     {
-        "number": 11, "week": "W6",
-        "title": "Camus: High Performance Without Meaning Is Just Exhaustion",
-        "prompt": """Write a 20-minute podcast script on Camus and the absurd for burnt-out high achievers.
+        "number": 11, "week": "S6",
+        "title": "Camus: El absurdo y la pregunta del suicidio",
+        "prompt": """Escribe un guión de podcast de 20 minutos sobre Camus y la filosofía del absurdo.
 
-Audience: MBAs 30-40 experiencing burnout despite objective success — they've won the game they were told to play and feel hollow. Connect the absurd to: high-performance burnout research (Christina Maslach), the trap of perpetual goal-chasing, how to find engagement within uncertainty rather than despite it. Sisyphus as the ultimate professional — must we imagine him happy?
+Camus abre El mito de Sísifo con la afirmación de que solo hay una pregunta filosófica verdaderamente seria: si la vida merece vivirse. Explora la estructura del absurdo — la colisión entre el deseo humano de sentido y el silencio del universo — y las tres respuestas de Camus: el suicidio físico, el suicidio filosófico (la religión) y la rebelión. ¿Por qué Camus rechaza el salto de fe de los existencialistas?
 
-Structure (separate with ---SECTION---): INTRO (2 min) / DEVELOPMENT (15 min) / CLOSE (3 min) with practice.
-
-Audio prose only. No markdown."""
+Estructura (separa con ---SECTION---):
+INTRO (600 palabras) / DESARROLLO (3000 palabras) / CIERRE (400 palabras).
+Solo prosa para audio. Sin markdown."""
     },
     {
-        "number": 12, "week": "W7",
-        "title": "Sartre: You Are Exactly What You Do, Not What You Intend",
-        "prompt": """Write a 20-minute podcast script on Sartre and radical responsibility for professionals.
+        "number": 12, "week": "S7",
+        "title": "Sartre: Condenado a ser libre",
+        "prompt": """Escribe un guión de podcast de 20 minutos sobre el existencialismo de Sartre y la libertad radical.
 
-Audience: MBAs 30-40 who know the gap between their intentions and their actual behavior. Connect existence preceding essence to: accountability culture in organizations, bad faith in corporate life (following orders, blaming the system), the difference between aspirational identity and behavioral identity, how Sartre's radical freedom reframes leadership.
+La existencia precede a la esencia: no hay naturaleza humana, ni propósito divino, ni guión. Somos arrojados a la existencia y condenados a hacernos a nosotros mismos a través de nuestras elecciones. Explora el peso total de esta posición: libertad radical, angustia, mala fe y el proyecto de la existencia auténtica. Analiza la mala fe en profundidad — el camarero que juega a ser camarero.
 
-Structure (separate with ---SECTION---): INTRO (2 min) / DEVELOPMENT (15 min) / CLOSE (3 min) with practice.
-
-Audio prose only. No markdown."""
+Estructura (separa con ---SECTION---):
+INTRO (600 palabras) / DESARROLLO (3000 palabras) / CIERRE (400 palabras).
+Solo prosa para audio. Sin markdown."""
     },
     {
-        "number": 13, "week": "W7",
-        "title": "Simone de Beauvoir: Freedom That Ignores Others Is Just Privilege",
-        "prompt": """Write a 20-minute podcast script on de Beauvoir and relational ethics for leaders.
+        "number": 13, "week": "S7",
+        "title": "Simone de Beauvoir: Ética, libertad y el otro",
+        "prompt": """Escribe un guión de podcast de 20 minutos sobre la filosofía de Simone de Beauvoir.
 
-Audience: MBAs 30-40 in positions of influence over others. Connect de Beauvoir's intersubjective freedom to: the ethical responsibilities of leadership, diversity and inclusion as a philosophical (not compliance) project, meritocracy's hidden assumptions, what it means to build organizations where others can actually flourish.
+De Beauvoir es frecuentemente reducida a su feminismo, pero fue una filósofa importante por derecho propio cuya obra desafía y extiende fundamentalmente el existencialismo. Explora su ética de la ambigüedad — la tensión irreducible entre libertad y situación, entre el yo y el otro. ¿Cómo argumenta que mi libertad está vinculada a la libertad de los demás? ¿Qué significa ser 'el otro'?
 
-Structure (separate with ---SECTION---): INTRO (2 min) / DEVELOPMENT (15 min) / CLOSE (3 min) with practice.
-
-Audio prose only. No markdown."""
+Estructura (separa con ---SECTION---):
+INTRO (600 palabras) / DESARROLLO (3000 palabras) / CIERRE (400 palabras).
+Solo prosa para audio. Sin markdown."""
     },
     {
-        "number": 14, "week": "W8",
-        "title": "Heidegger: Are You Living Your Life or the Life Assigned to You?",
-        "prompt": """Write a 20-minute podcast script on Heidegger and authentic existence for career-questioning professionals.
+        "number": 14, "week": "S8",
+        "title": "Heidegger: Ser, tiempo y autenticidad",
+        "prompt": """Escribe un guión de podcast de 20 minutos sobre el análisis heideggeriano de la existencia humana.
 
-Audience: MBAs 30-40 who have followed the 'right' path but aren't sure it's theirs. Connect Dasein, das Man (the anonymous 'they'), being-toward-death, and authentic vs. inauthentic existence to: social scripts in professional life, how institutions colonize individual identity, using mortality awareness to clarify what actually matters. Accessible Heidegger — no jargon without explanation.
+Ser y Tiempo es una de las obras filosóficas más difíciles e importantes del siglo XX. Hazla accesible sin simplificarla. Explora los conceptos clave: Dasein como ser-en-el-mundo, la facticidad, el Uno (das Man), la angustia como estado de ánimo fundamental y el ser-para-la-muerte. ¿Qué significa la existencia auténtica para Heidegger y es realmente alcanzable?
 
-Structure (separate with ---SECTION---): INTRO (2 min) / DEVELOPMENT (15 min) / CLOSE (3 min) with the 'deathbed test' practice.
-
-Audio prose only. No markdown."""
+Estructura (separa con ---SECTION---):
+INTRO (600 palabras) / DESARROLLO (3000 palabras) / CIERRE (400 palabras).
+Solo prosa para audio. Sin markdown."""
     },
     {
-        "number": 15, "week": "W9",
-        "title": "Your Philosophy of Life: Build the System That Governs You",
-        "prompt": """Write a 20-minute podcast script synthesizing the full 9-week philosophy of life curriculum.
+        "number": 15, "week": "S9",
+        "title": "La filosofía como forma de vida: síntesis final",
+        "prompt": """Escribe un guión de podcast de 20 minutos sintetizando la tradición de la filosofía de vida.
 
-Audience: MBAs 30-40 who've completed the series and are ready to integrate. Synthesize the most actionable tools from each school: what to keep from Stoicism, Epicureanism, Existentialism, Camus, and Nietzsche. How to build a personal philosophy that is coherent, robust, and actually guides decisions. Recommended next readings with selection criteria (why this book for someone at this stage). Philosophy as a daily practice for a 21st-century professional, not an academic hobby.
+Pierre Hadot argumentó que la filosofía antigua no era principalmente una empresa teórica sino un conjunto de ejercicios espirituales — prácticas para transformar el yo y vivir bien. Usa esta lente para sintetizar toda la serie: ¿qué ofrece cada escuela — socrática, epicúrea, estoica, nietzscheana, existencialista — como práctica, no solo como teoría? ¿Cuáles son las tensiones profundas entre ellas? Termina con una invitación abierta a continuar la vida filosófica.
 
-Structure (separate with ---SECTION---): INTRO (2 min) / DEVELOPMENT (15 min) / CLOSE (3 min) — inspiring, complete, a real ending.
-
-Audio prose only. No markdown."""
+Estructura (separa con ---SECTION---):
+INTRO (600 palabras) / DESARROLLO (3000 palabras) / CIERRE (400 palabras).
+Solo prosa para audio. Sin markdown."""
     },
 ]
 
-# ── Script generation (Gemini — free) ────────────────────────────────────────
+# ── Script generation (Groq — free) ──────────────────────────────────────────
 
 def generate_script(episode: dict) -> str:
-    print(f"  → Generating script with Gemini for: {episode['title']}")
+    print(f"  → Generating script with Groq for: {episode['title']}")
 
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
-
-    payload = {
-        "system_instruction": {
-            "parts": [{"text": "You are a world-class podcast scriptwriter specializing in philosophy for business professionals. You write in flowing, natural prose designed to be read aloud. Never use bullet points, headers, or markdown formatting. Write only the script itself, nothing else."}]
+    resp = requests.post(
+        "https://api.groq.com/openai/v1/chat/completions",
+        headers={
+            "Authorization": f"Bearer {GROQ_API_KEY}",
+            "Content-Type": "application/json"
         },
-        "contents": [{"parts": [{"text": episode["prompt"]}]}],
-        "generationConfig": {"temperature": 0.8, "maxOutputTokens": 8192}
-    }
+        json={
+            "model": "llama-3.3-70b-versatile",
+            "max_tokens": 8192,
+            "temperature": 0.8,
+            "messages": [
+                {
+                    "role": "system",
+                    "content": """Eres un guionista de podcasts de filosofía de nivel mundial.
 
-    resp = requests.post(url, json=payload, timeout=120)
+AUDIENCIA: Egresados universitarios de 30-40 años con formación intelectual avanzada. Leen mucho, piensan profundamente y quieren filosofía que los desafíe.
+
+TONO: Como un profesor brillante y apasionado en un seminario íntimo. Riguroso pero cálido. Sin lenguaje corporativo, sin analogías de negocios.
+
+ENFOQUE: Involúcrate con las ideas filosóficas a un nivel avanzado. Incluye tensiones, contradicciones y preguntas no resueltas. Usa analogías de literatura, arte, ciencia e historia.
+
+REQUISITOS CRÍTICOS:
+- Mínimo 4000 palabras. Esto es innegociable.
+- INTRO: mínimo 600 palabras. Abre con una pregunta provocadora o paradoja.
+- DESARROLLO: mínimo 3000 palabras. Desarrolla las ideas con profundidad y matices.
+- CIERRE: mínimo 400 palabras. Deja al oyente con una pregunta abierta.
+- Separa secciones con ---SECTION---
+- Solo prosa fluida para audio. Sin bullets, sin títulos, sin markdown."""
+                },
+                {
+                    "role": "user",
+                    "content": episode["prompt"] + "\n\nEscribe todo el guión completamente en español. Español literario, rico y natural — no una traducción del inglés. Piensa y escribe directamente en español."
+                }
+            ]
+        },
+        timeout=120
+    )
     resp.raise_for_status()
-    data = resp.json()
-    return data["candidates"][0]["content"]["parts"][0]["text"]
+    return resp.json()["choices"][0]["message"]["content"]
 
 
 def parse_sections(raw: str) -> dict:
     parts = [p.strip() for p in raw.split("---SECTION---") if p.strip()]
     return {
-        "intro":      parts[0] if len(parts) > 0 else "",
-        "body":       parts[1] if len(parts) > 1 else "",
-        "outro":      parts[2] if len(parts) > 2 else "",
-        "full":       "\n\n".join(parts)
+        "intro":  parts[0] if len(parts) > 0 else "",
+        "body":   parts[1] if len(parts) > 1 else "",
+        "outro":  parts[2] if len(parts) > 2 else "",
+        "full":   "\n\n".join(parts)
     }
 
-# ── Audio generation (Google Cloud TTS — free tier) ───────────────────────────
+# ── Audio generation (Edge TTS — free, no API key needed) ────────────────────
 
 def text_to_speech(text: str, output_path: Path) -> bool:
-    print(f"  → Converting to audio with Google Cloud TTS (WaveNet)...")
+    print(f"  → Converting to audio with Edge TTS (es-ES-AlvaroNeural)...")
 
-    url = f"https://texttospeech.googleapis.com/v1/text:synthesize?key={GOOGLE_TTS_KEY}"
+    import edge_tts
 
-    # Split into chunks of 4500 chars (API limit is 5000 bytes)
-    chunks = _split_text(text, max_chars=4500)
-    audio_chunks = []
+    async def generate():
+        communicate = edge_tts.Communicate(text, "es-ES-AlvaroNeural")
+        await communicate.save(str(output_path))
 
-    for i, chunk in enumerate(chunks):
-        print(f"     chunk {i+1}/{len(chunks)} ({len(chunk)} chars)")
-        payload = {
-            "input": {"text": chunk},
-            "voice": {
-                "languageCode": TTS_LANGUAGE,
-                "name": TTS_VOICE,
-                "ssmlGender": "MALE"
-            },
-            "audioConfig": {
-                "audioEncoding": "MP3",
-                "speakingRate": TTS_SPEAKING_RATE,
-                "pitch": TTS_PITCH,
-                "effectsProfileId": ["headphone-class-device"]
-            }
-        }
-        resp = requests.post(url, json=payload, timeout=60)
-        if resp.status_code != 200:
-            print(f"  ✗ TTS error: {resp.status_code} — {resp.text[:300]}")
-            return False
+    asyncio.run(generate())
 
-        import base64
-        audio_chunks.append(base64.b64decode(resp.json()["audioContent"]))
-        time.sleep(0.3)  # be nice to the API
-
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(output_path, "wb") as f:
-        for chunk in audio_chunks:
-            f.write(chunk)
+    if not output_path.exists():
+        print("  ✗ Audio file not created")
+        return False
 
     size_mb = output_path.stat().st_size / (1024 * 1024)
     print(f"  ✓ Audio saved: {output_path} ({size_mb:.1f} MB)")
     return True
-
-
-def _split_text(text: str, max_chars: int = 4500) -> list:
-    """Split text at sentence boundaries to stay under API limit."""
-    sentences = text.replace("\n\n", " [PARA] ").split(". ")
-    chunks, current = [], ""
-    for s in sentences:
-        candidate = current + s + ". "
-        if len(candidate) > max_chars and current:
-            chunks.append(current.replace(" [PARA] ", "\n\n").strip())
-            current = s + ". "
-        else:
-            current = candidate
-    if current:
-        chunks.append(current.replace(" [PARA] ", "\n\n").strip())
-    return chunks
 
 # ── RSS feed ──────────────────────────────────────────────────────────────────
 
@@ -335,24 +294,27 @@ def update_rss(all_eps: list):
     SubElement(ch, "description").text = PODCAST_DESC
     SubElement(ch, "language").text = PODCAST_LANGUAGE
     SubElement(ch, "link").text = PODCAST_BASE_URL
-    img = SubElement(ch, "itunes:image"); img.set("href", PODCAST_IMAGE)
+    img = SubElement(ch, "itunes:image")
+    img.set("href", PODCAST_IMAGE)
     SubElement(ch, "itunes:author").text = PODCAST_AUTHOR
     SubElement(ch, "itunes:explicit").text = "false"
     owner = SubElement(ch, "itunes:owner")
     SubElement(owner, "itunes:name").text = PODCAST_AUTHOR
     SubElement(owner, "itunes:email").text = PODCAST_EMAIL
-    cat = SubElement(ch, "itunes:category"); cat.set("text", "Education")
+    cat = SubElement(ch, "itunes:category")
+    cat.set("text", "Education")
 
     for ep_data in reversed(all_eps):
         ep   = ep_data["episode"]
         item = SubElement(ch, "item")
-        url  = f"{PODCAST_BASE_URL}/episodes/ep{ep['number']:02d}.mp3"
+        url  = f"{PODCAST_BASE_URL}/ep{ep['number']:02d}.mp3"
         SubElement(item, "title").text = f"Ep {ep['number']}: {ep['title']}"
         SubElement(item, "description").text = ep_data.get("description", "")
         SubElement(item, "pubDate").text = ep_data.get("pub_date", "")
         SubElement(item, "guid").text = url
         enc = SubElement(item, "enclosure")
-        enc.set("url", url); enc.set("type", "audio/mpeg")
+        enc.set("url", url)
+        enc.set("type", "audio/mpeg")
         enc.set("length", str(ep_data.get("file_size_bytes", 0)))
         SubElement(item, "itunes:duration").text = str(ep_data.get("duration_seconds", 1200))
         SubElement(item, "itunes:episode").text = str(ep["number"])
@@ -360,7 +322,6 @@ def update_rss(all_eps: list):
         SubElement(item, "itunes:explicit").text = "false"
 
     indent(rss, space="  ")
-    from xml.etree.ElementTree import ElementTree
     with open(RSS_FILE, "wb") as f:
         f.write(b'<?xml version="1.0" encoding="UTF-8"?>\n')
         ElementTree(rss).write(f, encoding="utf-8", xml_declaration=False)
@@ -371,16 +332,23 @@ def update_rss(all_eps: list):
 def run(episode_number: int = None, dry_run: bool = False):
     OUTPUT_DIR.mkdir(exist_ok=True)
 
-    # Pick episode
     if episode_number:
         ep = next((e for e in EPISODES if e["number"] == episode_number), None)
         if not ep:
             sys.exit(f"Episode {episode_number} not found.")
     else:
-        done = {int(p.stem[2:]) for p in OUTPUT_DIR.glob("ep*.mp3") if p.stem[2:].isdigit()}
+        done = set()
+        if META_FILE.exists():
+            try:
+                data = json.loads(META_FILE.read_text())
+                done = {e["episode"]["number"] for e in data}
+            except Exception:
+                done = set()
+        print(f"  Episodes already done: {done}")
         pending = [e for e in EPISODES if e["number"] not in done]
         if not pending:
-            print("✓ All episodes already generated."); return
+            print("✓ All episodes already generated.")
+            return
         ep = pending[0]
 
     print(f"\n{'='*60}\n  Ep {ep['number']}: {ep['title']}\n{'='*60}")
@@ -388,20 +356,18 @@ def run(episode_number: int = None, dry_run: bool = False):
     audio_path  = OUTPUT_DIR / f"ep{ep['number']:02d}.mp3"
     script_path = OUTPUT_DIR / f"ep{ep['number']:02d}_script.txt"
 
-    # 1. Generate script
-    raw    = generate_script(ep)
-    secs   = parse_sections(raw)
+    raw  = generate_script(ep)
+    secs = parse_sections(raw)
     script_path.write_text(secs["full"], encoding="utf-8")
     print(f"  ✓ Script saved ({len(secs['full'])} chars)")
 
     if dry_run:
-        print(f"\n[DRY RUN] Script preview:\n{secs['full'][:600]}...\n"); return
+        print(f"\n[DRY RUN] Preview:\n{secs['full'][:600]}...\n")
+        return
 
-    # 2. Generate audio
     if not text_to_speech(secs["full"], audio_path):
         sys.exit("Audio generation failed.")
 
-    # 3. Update metadata + RSS
     all_eps = json.loads(META_FILE.read_text()) if META_FILE.exists() else []
     all_eps = [e for e in all_eps if e["episode"]["number"] != ep["number"]]
     all_eps.append({
@@ -415,8 +381,7 @@ def run(episode_number: int = None, dry_run: bool = False):
     META_FILE.write_text(json.dumps(all_eps, ensure_ascii=False, indent=2))
     update_rss(all_eps)
 
-    print(f"\n✓ Done. Upload {audio_path} to {PODCAST_BASE_URL}/episodes/ep{ep['number']:02d}.mp3")
-    print(f"  Then submit feed.xml to creators.spotify.com")
+    print(f"\n✓ Episodio {ep['number']} completado: {audio_path}")
 
 
 if __name__ == "__main__":
@@ -425,9 +390,7 @@ if __name__ == "__main__":
     p.add_argument("--dry-run", action="store_true")
     args = p.parse_args()
 
-    if not GEMINI_API_KEY:
-        sys.exit("✗ Missing GEMINI_API_KEY")
-    if not args.dry_run and not GOOGLE_TTS_KEY:
-        sys.exit("✗ Missing GOOGLE_TTS_KEY")
+    if not GROQ_API_KEY:
+        sys.exit("✗ Missing GROQ_API_KEY")
 
     run(args.episode, args.dry_run)
