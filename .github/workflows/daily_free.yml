@@ -39,7 +39,42 @@ jobs:
           ARGS="--dry-run"
           [ -n "${{ github.event.inputs.episode_number }}" ] && ARGS="$ARGS --episode ${{ github.event.inputs.episode_number }}"
           python generate_episode_free.py $ARGS
+          
+          # Mark episode as done in metadata
+          python - <<'EOF'
+          import json
+          from pathlib import Path
+          from datetime import datetime, timezone
 
+          meta_file = Path("episodes/metadata.json")
+          scripts = sorted(Path("episodes").glob("*_script.txt"))
+          if not scripts:
+              exit(0)
+
+          latest = scripts[-1]
+          ep_num = int(latest.stem.replace("_script", "")[2:])
+
+          all_eps = json.loads(meta_file.read_text()) if meta_file.exists() else []
+          existing = {e["episode"]["number"] for e in all_eps}
+
+          if ep_num not in existing:
+              # Find episode data
+              import sys
+              sys.path.insert(0, ".")
+              from generate_episode_free import EPISODES
+              ep = next((e for e in EPISODES if e["number"] == ep_num), None)
+              if ep:
+                  all_eps.append({
+                      "episode": ep,
+                      "duration_seconds": 1200,
+                      "file_size_bytes": 0,
+                      "pub_date": datetime.now(timezone.utc).strftime("%a, %d %b %Y %H:%M:%S +0000"),
+                      "description": ""
+                  })
+                  all_eps.sort(key=lambda x: x["episode"]["number"])
+                  meta_file.write_text(json.dumps(all_eps, ensure_ascii=False, indent=2))
+                  print(f"✓ Marked episode {ep_num} as done")
+          EOF
       - name: Send script by email
         env:
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
