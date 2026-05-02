@@ -396,7 +396,15 @@ def run(episode_number: int = None, dry_run: bool = False):
         if not ep:
             sys.exit(f"Episode {episode_number} not found.")
     else:
-        done = {int(p.stem[2:]) for p in OUTPUT_DIR.glob("ep*.mp3") if p.stem[2:].isdigit()}
+        # Load done episodes from metadata file
+        done = set()
+        if META_FILE.exists():
+            try:
+                data = json.loads(META_FILE.read_text())
+                done = {e["episode"]["number"] for e in data}
+            except Exception:
+                done = set()
+        print(f"  Episodes already done: {done}")
         pending = [e for e in EPISODES if e["number"] not in done]
         if not pending:
             print("✓ All episodes already generated."); return
