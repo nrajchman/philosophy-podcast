@@ -62,7 +62,7 @@ jobs:
           git config user.email "actions@github.com"
           git fetch origin gh-pages
           git checkout gh-pages
-          cp feed.xml feed.xml
+          git add feed.xml || true
           git add feed.xml
           git commit -m "Update feed.xml" --allow-empty
           git push origin gh-pages
