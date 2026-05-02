@@ -229,7 +229,7 @@ CRITICAL REQUIREMENTS:
                                 },
                 {
                     "role": "user",
-                    "content": episode["prompt"]
+                    "content": episode["prompt"] + "\n\nEscribe todo el guión completamente en español. Español literario, rico y natural — no una traducción del inglés. Piensa y escribe directamente en español."
                 }
             ]
         },
