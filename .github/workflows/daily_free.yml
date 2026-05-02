@@ -12,7 +12,7 @@ on:
 jobs:
   generate:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
 
     steps:
       - uses: actions/checkout@v4
@@ -22,7 +22,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install requests
+        run: pip install requests edge-tts
 
       - name: Restore metadata
         uses: actions/cache@v4
@@ -31,205 +31,29 @@ jobs:
           key: podcast-metadata-${{ github.run_number }}
           restore-keys: podcast-metadata-
 
-      - name: Generate script only
+      - name: Generate episode
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: |
           mkdir -p episodes
-          ARGS="--dry-run"
-          [ -n "${{ github.event.inputs.episode_number }}" ] && ARGS="$ARGS --episode ${{ github.event.inputs.episode_number }}"
+          ARGS=""
+          [ -n "${{ github.event.inputs.episode_number }}" ] && ARGS="--episode ${{ github.event.inputs.episode_number }}"
           python generate_episode_free.py $ARGS
-          
-          # Mark episode as done in metadata
-          python - <<'EOF'
-          import json
-          from pathlib import Path
-          from datetime import datetime, timezone
 
-          meta_file = Path("episodes/metadata.json")
-          scripts = sorted(Path("episodes").glob("*_script.txt"))
-          if not scripts:
-              exit(0)
-
-          latest = scripts[-1]
-          ep_num = int(latest.stem.replace("_script", "")[2:])
-
-          all_eps = json.loads(meta_file.read_text()) if meta_file.exists() else []
-          existing = {e["episode"]["number"] for e in all_eps}
-
-          if ep_num not in existing:
-              # Find episode data
-              import sys
-              sys.path.insert(0, ".")
-              from generate_episode_free import EPISODES
-              ep = next((e for e in EPISODES if e["number"] == ep_num), None)
-              if ep:
-                  all_eps.append({
-                      "episode": ep,
-                      "duration_seconds": 1200,
-                      "file_size_bytes": 0,
-                      "pub_date": datetime.now(timezone.utc).strftime("%a, %d %b %Y %H:%M:%S +0000"),
-                      "description": ""
-                  })
-                  all_eps.sort(key=lambda x: x["episode"]["number"])
-                  meta_file.write_text(json.dumps(all_eps, ensure_ascii=False, indent=2))
-                  print(f"✓ Marked episode {ep_num} as done")
-          EOF
-
-      - name: Publish script to GitHub Pages
+      - name: Upload to GitHub Releases
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python - <<'EOF'
-          import os, json, subprocess
-          from pathlib import Path
-
-          scripts = sorted(Path("episodes").glob("*_script.txt"))
-          if not scripts:
-              print("No script found"); exit(0)
-
-          script_path = scripts[-1]
-          script_text = script_path.read_text(encoding="utf-8")
-          ep_num = int(script_path.stem.replace("_script","")[2:])
-
-          # Create docs folder for GitHub Pages
-          docs = Path("docs")
-          docs.mkdir(exist_ok=True)
-
-          # Save script as HTML page readable by NotebookLM
-          html = f"""<!DOCTYPE html>
-          <html><head><meta charset="utf-8">
-          <title>Episodio {ep_num}</title>
-          </head><body>
-          <pre style="white-space:pre-wrap;font-family:Georgia;max-width:800px;margin:40px auto;line-height:1.8">
-          {script_text}
-          </pre>
-          </body></html>"""
-
-          (docs / f"ep{ep_num:02d}.html").write_text(html, encoding="utf-8")
-
-          # Update index with all episodes
-          all_eps = []
-          for f in sorted(docs.glob("ep*.html")):
-              num = int(f.stem[2:])
-              all_eps.append(f'<li><a href="{f.name}">Episodio {num}</a></li>')
-
-          (docs / "index.html").write_text(f"""<!DOCTYPE html>
-          <html><head><meta charset="utf-8"><title>Philosophy for Life</title></head>
-          <body style="font-family:Georgia;max-width:600px;margin:40px auto">
-          <h1>Philosophy for Life — Episodios</h1>
-          <ul style="line-height:2.5">{"".join(all_eps)}</ul>
-          </body></html>""", encoding="utf-8")
-
-          # Save URL for email
-          repo = os.environ.get("GITHUB_REPOSITORY","")
-          username = repo.split("/")[0]
-          reponame = repo.split("/")[1]
-          url = f"https://{username}.github.io/{reponame}/ep{ep_num:02d}.html"
-          Path("episodes/drive_link.txt").write_text(url)
-          print(f"✓ Script page: {url}")
-          EOF
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs          
-      - name: Send script by email
-        env:
-          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
-        run: |
-          python - <<'EOF'
-          import smtplib
-          import os
-          from pathlib import Path
-          from email.mime.multipart import MIMEMultipart
-          from email.mime.text import MIMEText
-
-          # Find the script file
-          scripts = list(Path("episodes").glob("*.txt"))
-          if not scripts:
-              print("No script found")
-              exit(1)
-
-          script_path = sorted(scripts)[-1]
-          script_text = script_path.read_text(encoding="utf-8")
-          episode_name = script_path.stem.replace("_script", "").replace("ep0", "Ep ").replace("ep", "Ep ")
-
-          # Build email
-          msg = MIMEMultipart("alternative")
-          # Read Drive link if available
-          drive_link_file = Path("episodes/drive_link.txt")
-          drive_link = drive_link_file.read_text().strip() if drive_link_file.exists() else ""
-
-          msg["Subject"] = f"🎙️ Philosophy for Life — {episode_name} — Script listo"
-          msg["From"]    = "n.rajchman@gmail.com"
-          msg["To"]      = "n.rajchman@gmail.com"
-
-          drive_section_html = f"""
-          <div style="background: #e8f4e8; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-            <strong>📁 Abrir directamente en NotebookLM:</strong><br><br>
-            <a href="{drive_link}" style="font-size: 16px;">Ver guión en Google Drive</a><br><br>
-            <ol style="line-height: 2; margin-top: 10px;">
-              <li>Abre <a href="https://notebooklm.google.com">notebooklm.google.com</a></li>
-              <li>Crea un notebook nuevo</li>
-              <li>Haz clic en <strong>"Agregar fuente"</strong> → <strong>"Google Drive"</strong></li>
-              <li>Selecciona el archivo del episodio de hoy</li>
-              <li>Panel derecho → <strong>Audio Overview → Generate</strong></li>
-              <li>Descarga el MP3 y súbelo a <a href="https://creators.spotify.com">creators.spotify.com</a></li>
-            </ol>
-          </div>
-          """ if drive_link else ""
-
-          html = f"""
-          <html><body style="font-family: Georgia, serif; max-width: 700px; margin: 0 auto; padding: 20px; color: #222;">
-          <h2 style="color: #1a1a2e;">🎙️ Philosophy for Life — {episode_name}</h2>
-          {drive_section_html}
-          <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
-          <p style="color: #666; font-size: 13px;">Guión completo:</p>
-          <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; line-height: 1.8; white-space: pre-wrap; font-size: 15px;">{script_text}</div>
-          </body></html>
-          """
-
-          # Plain text version
-          plain = f"""Tu episodio de hoy está listo.
-
-          PASOS:
-          1. Copia el guión de abajo
-          2. Ve a notebooklm.google.com → nuevo notebook → pega el texto
-          3. Panel derecho → Audio Overview → Generate
-          4. Descarga el MP3 y súbelo a creators.spotify.com
-
-          ─────────────────────────────────────
-          {script_text}
-          """
-
-          # HTML version (nicer to read)
-          html = f"""
-          <html><body style="font-family: Georgia, serif; max-width: 700px; margin: 0 auto; padding: 20px; color: #222;">
-          <h2 style="color: #1a1a2e;">🎙️ Philosophy for Life — {episode_name}</h2>
-          <p>Tu guión de hoy está listo. Sigue estos pasos:</p>
-          <ol style="line-height: 2;">
-            <li>Copia el guión de abajo</li>
-            <li>Ve a <a href="https://notebooklm.google.com">notebooklm.google.com</a> → nuevo notebook → pega el texto</li>
-            <li>Panel derecho → <strong>Audio Overview → Generate</strong></li>
-            <li>Descarga el MP3 y súbelo a <a href="https://creators.spotify.com">creators.spotify.com</a></li>
-          </ol>
-          <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
-          <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; line-height: 1.8; white-space: pre-wrap; font-size: 15px;">{script_text}</div>
-          </body></html>
-          """
-
-          msg.attach(MIMEText(plain, "plain"))
-          msg.attach(MIMEText(html,  "html"))
-
-          # Send
-          with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-              server.login("n.rajchman@gmail.com", os.environ["GMAIL_APP_PASSWORD"])
-              server.send_message(msg)
-
-          print(f"✓ Email sent with script: {script_path.name}")
-          EOF
+          gh release delete episodes-latest --yes 2>/dev/null || true
+          gh release create episodes-latest \
+            --title "Latest Episodes" \
+            --notes "Auto-generated philosophy podcast episodes" \
+            --prerelease
+          for f in episodes/ep*.mp3; do
+            [ -f "$f" ] && gh release upload episodes-latest "$f"
+          done
+          [ -f feed.xml ] && gh release upload episodes-latest feed.xml
+          echo "✓ Upload complete"
 
       - name: Save metadata cache
         if: always()
