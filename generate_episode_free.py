@@ -52,181 +52,137 @@ EPISODES = [
     {
         "number": 1, "week": "W1",
         "title": "Socrates: The Unexamined Life Is Not Worth Living",
-        "prompt": """Write a 20-minute podcast script about Socrates as a model of philosophical life.
+        "prompt": """Write a 20-minute podcast script on Socrates as a model of philosophical life.
 
-Audience: professionals aged 30-40 with MBA backgrounds. They're time-poor, results-driven, and want ideas that actually change how they live and lead — not academic theory.
+The examined life, the Socratic method, self-knowledge as a radical practice, virtue as knowledge. Explore the paradox of Socratic ignorance — how knowing that you don't know is itself a form of wisdom. Discuss the tension between Socratic humility and his absolute conviction that the unexamined life is worthless. Why did Athens kill him, and what does that tell us about the relationship between philosophy and society?
 
-Tone: Like a brilliant colleague giving you the most interesting talk of your week. Conversational, direct, intellectually rigorous but never dry. American English.
-
-Connect Socratic ideas to: leadership blind spots, the gap between stated and actual values, how high performers delude themselves about what matters, the courage to ask hard questions in corporate settings.
-
-Structure (separate each section with the exact marker ---SECTION---):
-
-INTRO (2 min): A sharp hook — place us in a scene or tension. Why does Socrates matter RIGHT NOW to someone running a team or building a career?
-
-DEVELOPMENT (15 min): Cover the Socratic method, self-knowledge (not the cliché, the radical version), virtue as knowledge, and the examined life. Weave in concrete examples from professional life — board meetings, performance reviews, career inflection points. At least 2 vivid analogies.
-
-CLOSE (3 min): A synthesis + one transformative question for the listener to sit with this week + one concrete practice they can do TODAY.
-
-Write for audio: no bullet points, no headers, no markdown. Pure flowing prose that sounds natural when read aloud. Vary sentence length. Use rhetorical questions."""
+Separate sections with ---SECTION---: INTRO (600 words) / DEVELOPMENT (3,000 words) / CLOSE (400 words)."""
     },
     {
         "number": 2, "week": "W1",
-        "title": "Self-Knowledge: The Most Underrated Executive Skill",
-        "prompt": """Write a 20-minute podcast script on Socratic self-knowledge as a professional superpower.
+        "title": "Self-Knowledge: The Most Radical Philosophical Demand",
+        "prompt": """Write a 20-minute podcast script on self-knowledge as a philosophical problem.
 
-Audience: MBA-level professionals 30-40. Connect 'know thyself' to: cognitive biases in business decisions, the self-deception patterns of high achievers, the gap between leadership identity and actual behavior, what makes some executives grow and others plateau.
+From the Delphic oracle to Freud, the demand to 'know thyself' has haunted Western thought. But is genuine self-knowledge possible? Explore the Socratic version, the Stoic version, and the modern challenge from psychoanalysis and cognitive science — which suggest the self is largely opaque to itself. What does it mean to know yourself if the self is not a stable object? Include Montaigne's radical self-examination, Nietzsche's critique of introspection, and the Buddhist dissolution of the self altogether.
 
-Reference real psychological concepts (Dunning-Kruger, confirmation bias, identity-protective cognition) without being academic.
-
-Structure (separate with ---SECTION---): INTRO (2 min) / DEVELOPMENT (15 min) / CLOSE (3 min) with weekly practice.
-
-Write for audio only. No markdown."""
+Separate sections with ---SECTION---: INTRO (600 words) / DEVELOPMENT (3,000 words) / CLOSE (400 words)."""
     },
     {
         "number": 3, "week": "W2",
-        "title": "Epicurus: Why Everything You're Chasing Might Be Wrong",
-        "prompt": """Write a 20-minute podcast script on Epicurus and genuine wellbeing for ambitious professionals.
+        "title": "Epicurus: The Misunderstood Philosopher of Pleasure",
+        "prompt": """Write a 20-minute podcast script on Epicurus and the philosophy of pleasure.
 
-Audience: MBAs 30-40 who've hit many of their goals and feel something's off. Connect Epicurean pleasure classification (necessary/unnecessary/empty) to: lifestyle inflation, hedonic adaptation, the research on money and happiness (cite Kahneman, Killingsworth), what actually predicts life satisfaction vs. what professionals pursue.
+Epicurus is almost universally misread as a hedonist. Reconstruct his actual position: the careful taxonomy of pleasures, ataraxia as the highest good, the role of friendship, the argument against the fear of death. Explore the tension between Epicurean withdrawal from public life and our modern sense that engagement is a moral duty. How does Epicurus's garden community relate to later utopian experiments? What does his philosophy reveal about the relationship between desire and suffering?
 
-Structure (separate with ---SECTION---): INTRO (2 min) / DEVELOPMENT (15 min) / CLOSE (3 min) with practice.
-
-Audio prose only. No markdown."""
+Separate sections with ---SECTION---: INTRO (600 words) / DEVELOPMENT (3,000 words) / CLOSE (400 words)."""
     },
     {
         "number": 4, "week": "W2",
-        "title": "The Philosophy of Enough: Strategic Simplicity",
-        "prompt": """Write a 20-minute podcast script on philosophical simplicity as strategic advantage.
+        "title": "The Philosophy of Enough: Simplicity as a Radical Act",
+        "prompt": """Write a 20-minute podcast script on the philosophical tradition of voluntary simplicity.
 
-Audience: MBA professionals 30-40 prone to overcommitment and optimization addiction. Connect Epicurus and the Cynics to: essentialism in career design, the hidden costs of accumulation, the decision fatigue research, Warren Buffett's 'not-to-do list' strategy, Cal Newport's digital minimalism.
+From Diogenes living in a barrel to Thoreau at Walden Pond, a strand of Western philosophy has argued that civilization itself is the problem. Explore the Cynic critique of convention, Epicurean simplicity, Stoic indifference to externals, and Thoreau's experiment in deliberate living. What is the philosophical argument behind choosing less? How does this tradition relate to Buddhist non-attachment? Is voluntary simplicity a genuine philosophical position or a luxury available only to the privileged?
 
-Structure (separate with ---SECTION---): INTRO (2 min) / DEVELOPMENT (15 min) / CLOSE (3 min) with practice.
-
-Audio prose only. No markdown."""
+Separate sections with ---SECTION---: INTRO (600 words) / DEVELOPMENT (3,000 words) / CLOSE (400 words)."""
     },
     {
         "number": 5, "week": "W3",
-        "title": "Epictetus: Stop Managing What You Can't Control",
-        "prompt": """Write a 20-minute podcast script on the Stoic dichotomy of control for leaders.
+        "title": "Epictetus: Freedom in Chains",
+        "prompt": """Write a 20-minute podcast script on Epictetus and the Stoic conception of freedom.
 
-Audience: MBA professionals 30-40 managing teams, outcomes, and stakeholder expectations. Connect Epictetus's core distinction to: stress management research, the OKR framework (inputs vs. outcomes), how top performers separate signal from noise, reacting to market volatility, dealing with unfair feedback.
+Epictetus was a slave who became one of the most influential philosophers of the ancient world. His central insight — that freedom is interior, not exterior — is both liberating and deeply troubling. Explore the dichotomy of control in depth: what it means philosophically, its connection to Stoic physics and cosmology, and its limits. Is Stoic freedom a genuine liberation or a sophisticated form of resignation? How does it compare to existentialist freedom? What does it mean to be free when the world is unjust?
 
-Mention the connection to modern CBT — this isn't just philosophy, it's evidence-based cognitive science.
-
-Structure (separate with ---SECTION---): INTRO (2 min) / DEVELOPMENT (15 min) / CLOSE (3 min) with a weekly drill.
-
-Audio prose only. No markdown."""
+Separate sections with ---SECTION---: INTRO (600 words) / DEVELOPMENT (3,000 words) / CLOSE (400 words)."""
     },
     {
         "number": 6, "week": "W3",
-        "title": "Stoic Emotions: Feel Everything, Be Ruled by Nothing",
-        "prompt": """Write a 20-minute podcast script on the Stoic theory of emotions for high-pressure professionals.
+        "title": "Stoic Emotions: The Philosophy of Inner Weather",
+        "prompt": """Write a 20-minute podcast script on the Stoic theory of emotions.
 
-Audience: MBAs 30-40 making decisions under emotional load — negotiations, layoffs, investor pressure. Connect Stoic emotion theory (passions as false judgments, eupatheiai as healthy states) to: emotional intelligence in leadership, the neuroscience of decision-making under stress (Damasio's somatic marker hypothesis), why the best negotiators control framing not feelings.
+The Stoics argued that emotions are not things that happen to us but judgments we make — and therefore within our control. Explore this radical thesis in depth: the distinction between passions and eupatheiai, the role of assent in emotional experience, and the Stoic practice of examining impressions before acting on them. How does this compare to modern psychological accounts of emotion? Is the Stoic view psychologically realistic? Explore the tension between Stoic emotional discipline and the value of genuine feeling — is a life without passion a fully human life?
 
-Structure (separate with ---SECTION---): INTRO (2 min) / DEVELOPMENT (15 min) / CLOSE (3 min) with practice.
-
-Audio prose only. No markdown."""
+Separate sections with ---SECTION---: INTRO (600 words) / DEVELOPMENT (3,000 words) / CLOSE (400 words)."""
     },
     {
         "number": 7, "week": "W4",
-        "title": "Marcus Aurelius: Leading When Nobody's Watching",
-        "prompt": """Write a 20-minute podcast script on Marcus Aurelius as a model of leadership philosophy.
+        "title": "Marcus Aurelius: Philosophy as a Way of Life",
+        "prompt": """Write a 20-minute podcast script on Marcus Aurelius and the Meditations.
 
-Audience: MBA professionals 30-40 in leadership roles or aspiring to them. Connect the Meditations to: the loneliness of command, managing ego at the top, making decisions with incomplete information, maintaining ethical clarity under institutional pressure. The Meditations as a personal management system, not just philosophy.
+The Meditations are unique in philosophical literature: private notes never intended for publication, written by the most powerful man in the world as a discipline of self-examination. Explore what kind of text they are, how they function as a spiritual exercise, and what they reveal about Stoicism as a lived practice rather than a theoretical system. Engage with the recurring themes: impermanence, the smallness of human affairs, the unity of rational nature. What does it mean to practice philosophy in the midst of power, war and responsibility?
 
-Structure (separate with ---SECTION---): INTRO (2 min) / DEVELOPMENT (15 min) / CLOSE (3 min) with the practice of journaling as a leadership tool.
-
-Audio prose only. No markdown."""
+Separate sections with ---SECTION---: INTRO (600 words) / DEVELOPMENT (3,000 words) / CLOSE (400 words)."""
     },
     {
         "number": 8, "week": "W4",
-        "title": "Seneca: Your Time Is the Only Asset That Doesn't Compound",
-        "prompt": """Write a 20-minute podcast script on Seneca's 'On the Shortness of Life' for modern professionals.
+        "title": "Seneca: On the Shortness of Life",
+        "prompt": """Write a 20-minute podcast script on Seneca's philosophy of time and mortality.
 
-Audience: MBAs 30-40 who feel their calendar runs their life. Connect Seneca to: purposeful productivity vs. anxiety-driven busyness, the research on attention residue and deep work (Cal Newport), designing protected time in a corporate calendar, memento mori as a prioritization tool (what would you do differently?).
+Seneca's essay 'On the Shortness of Life' is one of the most urgent texts in Western philosophy. Explore its central argument — that life is not short, we simply waste it — and follow its implications into Seneca's broader philosophy of time, attention, and the good life. Examine the tension at the heart of Seneca's life: a Stoic philosopher who was also enormously wealthy and complicit in Nero's court. Does this contradiction undermine his philosophy or make it more interesting? How does memento mori function as a philosophical practice?
 
-Structure (separate with ---SECTION---): INTRO (2 min) / DEVELOPMENT (15 min) / CLOSE (3 min) with a time audit practice.
-
-Audio prose only. No markdown."""
+Separate sections with ---SECTION---: INTRO (600 words) / DEVELOPMENT (3,000 words) / CLOSE (400 words)."""
     },
     {
         "number": 9, "week": "W5",
-        "title": "Nietzsche: When the Map Breaks, How Do You Navigate?",
-        "prompt": """Write a 20-minute podcast script on Nietzsche and value creation for professionals in transition.
+        "title": "Nietzsche: The Death of God and the Crisis of Values",
+        "prompt": """Write a 20-minute podcast script on Nietzsche's diagnosis of modernity.
 
-Audience: MBAs 30-40 experiencing career pivots, identity crises, or questioning whether their current path is really theirs. Connect the death of God (as a metaphor for any collapsed meaning system — a company, an industry, an identity) to: the psychology of career reinvention, nihilism as a phase vs. a destination, will to power as creative self-authorship rather than dominance.
+The death of God is not a theological claim but a cultural diagnosis: the collapse of the metaphysical framework that gave Western civilization its values, meaning and coherence. Explore what Nietzsche means, why he thinks it is inevitable, and what he sees as its consequences — nihilism, the last man, the possibility of revaluation. Engage with the depth of the crisis he is describing: not just the loss of religion, but the loss of any ground for values whatsoever. How does this relate to our current cultural moment?
 
-Structure (separate with ---SECTION---): INTRO (2 min) / DEVELOPMENT (15 min) / CLOSE (3 min) with practice.
-
-Audio prose only. No markdown."""
+Separate sections with ---SECTION---: INTRO (600 words) / DEVELOPMENT (3,000 words) / CLOSE (400 words)."""
     },
     {
         "number": 10, "week": "W5",
-        "title": "The Eternal Return: Would You Live This Life Again?",
-        "prompt": """Write a 20-minute podcast script on Nietzsche's eternal return as a decision-making framework.
+        "title": "The Eternal Return: Nietzsche's Heaviest Thought",
+        "prompt": """Write a 20-minute podcast script on Nietzsche's doctrine of eternal return.
 
-Audience: MBAs 30-40 making consequential decisions — career moves, relationships, big bets. Connect the eternal return thought experiment to: Jeff Bezos's regret minimization framework, how to evaluate irreversible decisions, amor fati as a strategy for integrating past choices, the difference between regret (useful) and rumination (destructive).
+Nietzsche called the eternal return his 'heaviest thought' — the idea that everything that has happened will happen again, infinitely. Explore the multiple dimensions of this idea: as a cosmological hypothesis, as a thought experiment, as an ethical criterion (amor fati), and as a response to nihilism. Why does Nietzsche think this is the most difficult idea a human being can affirm? How does it relate to his critique of resentment and his vision of the Übermensch? Engage with the philosophical objections and the profound existential challenge it poses.
 
-Structure (separate with ---SECTION---): INTRO (2 min) / DEVELOPMENT (15 min) / CLOSE (3 min) with the eternal return exercise.
-
-Audio prose only. No markdown."""
+Separate sections with ---SECTION---: INTRO (600 words) / DEVELOPMENT (3,000 words) / CLOSE (400 words)."""
     },
     {
         "number": 11, "week": "W6",
-        "title": "Camus: High Performance Without Meaning Is Just Exhaustion",
-        "prompt": """Write a 20-minute podcast script on Camus and the absurd for burnt-out high achievers.
+        "title": "Camus: The Absurd and the Question of Suicide",
+        "prompt": """Write a 20-minute podcast script on Camus and the philosophy of the absurd.
 
-Audience: MBAs 30-40 experiencing burnout despite objective success — they've won the game they were told to play and feel hollow. Connect the absurd to: high-performance burnout research (Christina Maslach), the trap of perpetual goal-chasing, how to find engagement within uncertainty rather than despite it. Sisyphus as the ultimate professional — must we imagine him happy?
+Camus opens The Myth of Sisyphus with the claim that there is only one truly serious philosophical question: whether life is worth living. Explore the structure of the absurd — the collision between human desire for meaning and the universe's silence — and Camus's three responses: physical suicide, philosophical suicide (religion), and rebellion. Why does Camus reject the existentialists' leap of faith? What does it mean to live without appeal? Engage with the image of Sisyphus and why Camus insists we must imagine him happy.
 
-Structure (separate with ---SECTION---): INTRO (2 min) / DEVELOPMENT (15 min) / CLOSE (3 min) with practice.
-
-Audio prose only. No markdown."""
+Separate sections with ---SECTION---: INTRO (600 words) / DEVELOPMENT (3,000 words) / CLOSE (400 words)."""
     },
     {
         "number": 12, "week": "W7",
-        "title": "Sartre: You Are Exactly What You Do, Not What You Intend",
-        "prompt": """Write a 20-minute podcast script on Sartre and radical responsibility for professionals.
+        "title": "Sartre: Condemned to Be Free",
+        "prompt": """Write a 20-minute podcast script on Sartre's existentialism and radical freedom.
 
-Audience: MBAs 30-40 who know the gap between their intentions and their actual behavior. Connect existence preceding essence to: accountability culture in organizations, bad faith in corporate life (following orders, blaming the system), the difference between aspirational identity and behavioral identity, how Sartre's radical freedom reframes leadership.
+Existence precedes essence: there is no human nature, no God-given purpose, no script. We are thrown into existence and condemned to make ourselves through our choices. Explore the full weight of this position: radical freedom, anguish, bad faith, and the project of authentic existence. Engage with Sartre's analysis of bad faith in depth — the waiter who plays at being a waiter, the woman who ignores her companion's intentions. How does Sartrean freedom relate to responsibility? What are the limits of his position?
 
-Structure (separate with ---SECTION---): INTRO (2 min) / DEVELOPMENT (15 min) / CLOSE (3 min) with practice.
-
-Audio prose only. No markdown."""
+Separate sections with ---SECTION---: INTRO (600 words) / DEVELOPMENT (3,000 words) / CLOSE (400 words)."""
     },
     {
         "number": 13, "week": "W7",
-        "title": "Simone de Beauvoir: Freedom That Ignores Others Is Just Privilege",
-        "prompt": """Write a 20-minute podcast script on de Beauvoir and relational ethics for leaders.
+        "title": "Simone de Beauvoir: Ethics, Freedom and the Other",
+        "prompt": """Write a 20-minute podcast script on Simone de Beauvoir's philosophy.
 
-Audience: MBAs 30-40 in positions of influence over others. Connect de Beauvoir's intersubjective freedom to: the ethical responsibilities of leadership, diversity and inclusion as a philosophical (not compliance) project, meritocracy's hidden assumptions, what it means to build organizations where others can actually flourish.
+De Beauvoir is often reduced to her feminism, but she was a major philosopher in her own right whose work fundamentally challenges and extends existentialism. Explore her ethics of ambiguity — the irreducible tension between freedom and situation, between self and other. How does she argue that my freedom is bound up with the freedom of others? Engage with her analysis of oppression, her critique of the serious man, and the philosophical foundations of The Second Sex. What does it mean to be 'the other'?
 
-Structure (separate with ---SECTION---): INTRO (2 min) / DEVELOPMENT (15 min) / CLOSE (3 min) with practice.
-
-Audio prose only. No markdown."""
+Separate sections with ---SECTION---: INTRO (600 words) / DEVELOPMENT (3,000 words) / CLOSE (400 words)."""
     },
     {
         "number": 14, "week": "W8",
-        "title": "Heidegger: Are You Living Your Life or the Life Assigned to You?",
-        "prompt": """Write a 20-minute podcast script on Heidegger and authentic existence for career-questioning professionals.
+        "title": "Heidegger: Being, Time and Authenticity",
+        "prompt": """Write a 20-minute podcast script on Heidegger's analysis of human existence.
 
-Audience: MBAs 30-40 who have followed the 'right' path but aren't sure it's theirs. Connect Dasein, das Man (the anonymous 'they'), being-toward-death, and authentic vs. inauthentic existence to: social scripts in professional life, how institutions colonize individual identity, using mortality awareness to clarify what actually matters. Accessible Heidegger — no jargon without explanation.
+Heidegger's Being and Time is one of the most difficult and important philosophical works of the twentieth century. Make it accessible without simplifying it. Explore the key concepts: Dasein as being-in-the-world, thrownness, the They-self (das Man), anxiety as a fundamental mood, and being-toward-death. How does Heidegger's analysis of everyday inauthenticity describe something we all recognize? What does authentic existence mean for Heidegger, and is it actually achievable? Engage with the philosophical depth of his account of mortality.
 
-Structure (separate with ---SECTION---): INTRO (2 min) / DEVELOPMENT (15 min) / CLOSE (3 min) with the 'deathbed test' practice.
-
-Audio prose only. No markdown."""
+Separate sections with ---SECTION---: INTRO (600 words) / DEVELOPMENT (3,000 words) / CLOSE (400 words)."""
     },
     {
         "number": 15, "week": "W9",
-        "title": "Your Philosophy of Life: Build the System That Governs You",
-        "prompt": """Write a 20-minute podcast script synthesizing the full 9-week philosophy of life curriculum.
+        "title": "Philosophy as a Way of Life: Ancient Wisdom for Modern Existence",
+        "prompt": """Write a 20-minute podcast script synthesizing the philosophy of life tradition.
 
-Audience: MBAs 30-40 who've completed the series and are ready to integrate. Synthesize the most actionable tools from each school: what to keep from Stoicism, Epicureanism, Existentialism, Camus, and Nietzsche. How to build a personal philosophy that is coherent, robust, and actually guides decisions. Recommended next readings with selection criteria (why this book for someone at this stage). Philosophy as a daily practice for a 21st-century professional, not an academic hobby.
+Pierre Hadot argued that ancient philosophy was not primarily a theoretical enterprise but a set of spiritual exercises — practices for transforming the self and living well. Use this lens to synthesize the entire series: what does each school — Socratic, Epicurean, Stoic, Nietzschean, existentialist — offer as a practice, not just a theory? What are the deep tensions between them? Is it possible to build a coherent philosophy of life from these traditions, or are they ultimately incompatible? End with an open invitation to continue the philosophical life.
 
-Structure (separate with ---SECTION---): INTRO (2 min) / DEVELOPMENT (15 min) / CLOSE (3 min) — inspiring, complete, a real ending.
-
-Audio prose only. No markdown."""
+Separate sections with ---SECTION---: INTRO (600 words) / DEVELOPMENT (3,000 words) / CLOSE (400 words)."""
     },
 ]
 
@@ -249,16 +205,27 @@ def generate_script(episode: dict) -> str:
                 {
                     
                     "role": "system",
-                    "content": """You are a world-class podcast scriptwriter specializing in philosophy for business professionals. 
+                    "content": """You are a world-class podcast scriptwriter specializing in philosophy for intellectually curious adults.
+
+AUDIENCE: University graduates aged 30-40 with an advanced intellectual background. They read widely, think deeply, and want philosophy that challenges them — not simplified summaries. They are drawn to ideas for their own sake, not for career utility.
+
+TONE: Like a brilliant, passionate professor in an intimate seminar. Rigorous but warm. You take ideas seriously and so does your audience. No corporate language, no business analogies, no references to productivity or careers.
+
+CONTENT APPROACH:
+- Engage with the philosophical ideas themselves at an advanced level
+- Draw connections between thinkers across different eras and traditions
+- Include the tensions, contradictions and unresolved questions within each philosophy
+- Use analogies from literature, art, science, history and everyday human experience
+- Challenge the listener intellectually — don't resolve everything neatly
+- Treat the listener as a peer, not a student
 
 CRITICAL REQUIREMENTS:
-- Scripts must be 3,500 to 4,000 words minimum. This is non-negotiable.
-- A 20-minute podcast at normal speaking pace requires approximately 3,500 words.
-- Write in flowing natural prose designed to be read aloud.
-- Never use bullet points, headers, or markdown formatting.
-- Write only the script itself, nothing else.
-- Develop each idea fully with examples, analogies, and stories. Do not rush.
-- Each section must be substantial: INTRO at least 400 words, DEVELOPMENT at least 2,800 words, CLOSE at least 400 words."""
+- Scripts must be 4,000 words minimum. This is non-negotiable.
+- INTRO: 600 words minimum. Open with a provocative question, image or paradox.
+- DEVELOPMENT: 3,000 words minimum. Develop ideas fully, with depth and nuance.
+- CLOSE: 400 words minimum. Leave the listener with an open question, not a neat answer.
+- Separate sections with ---SECTION---
+- Write only flowing prose for audio. No bullets, no headers, no markdown."""
                                 },
                 {
                     "role": "user",
