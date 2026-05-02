@@ -25,7 +25,6 @@ from datetime import datetime, timezone
 
 # ── Config ────────────────────────────────────────────────────────────────────
 GEMINI_API_KEY   = os.environ.get("GEMINI_API_KEY", "")
-GOOGLE_TTS_KEY   = os.environ.get("GOOGLE_TTS_KEY", "")
 
 OUTPUT_DIR  = Path("./episodes")
 RSS_FILE    = Path("./feed.xml")
@@ -249,43 +248,19 @@ def parse_sections(raw: str) -> dict:
 # ── Audio generation (Google Cloud TTS — free tier) ───────────────────────────
 
 def text_to_speech(text: str, output_path: Path) -> bool:
-    print(f"  → Converting to audio with Google Cloud TTS (WaveNet)...")
+    print(f"  → Converting to audio with Edge TTS (es-ES-AlvaroNeural)...")
+    import asyncio
+    import edge_tts
 
-    url = f"https://texttospeech.googleapis.com/v1/text:synthesize?key={GOOGLE_TTS_KEY}"
+    async def generate():
+        communicate = edge_tts.Communicate(text, "es-ES-AlvaroNeural")
+        await communicate.save(str(output_path))
 
-    # Split into chunks of 4500 chars (API limit is 5000 bytes)
-    chunks = _split_text(text, max_chars=4500)
-    audio_chunks = []
+    asyncio.run(generate())
 
-    for i, chunk in enumerate(chunks):
-        print(f"     chunk {i+1}/{len(chunks)} ({len(chunk)} chars)")
-        payload = {
-            "input": {"text": chunk},
-            "voice": {
-                "languageCode": TTS_LANGUAGE,
-                "name": TTS_VOICE,
-                "ssmlGender": "MALE"
-            },
-            "audioConfig": {
-                "audioEncoding": "MP3",
-                "speakingRate": TTS_SPEAKING_RATE,
-                "pitch": TTS_PITCH,
-                "effectsProfileId": ["headphone-class-device"]
-            }
-        }
-        resp = requests.post(url, json=payload, timeout=60)
-        if resp.status_code != 200:
-            print(f"  ✗ TTS error: {resp.status_code} — {resp.text[:300]}")
-            return False
-
-        import base64
-        audio_chunks.append(base64.b64decode(resp.json()["audioContent"]))
-        time.sleep(0.3)  # be nice to the API
-
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(output_path, "wb") as f:
-        for chunk in audio_chunks:
-            f.write(chunk)
+    if not output_path.exists():
+        print("  ✗ Audio file not created")
+        return False
 
     size_mb = output_path.stat().st_size / (1024 * 1024)
     print(f"  ✓ Audio saved: {output_path} ({size_mb:.1f} MB)")
@@ -421,7 +396,7 @@ if __name__ == "__main__":
 
     if not os.environ.get("GROQ_API_KEY"):
         sys.exit("✗ Missing GROQ_API_KEY")
-    if not args.dry_run and not GOOGLE_TTS_KEY:
-        sys.exit("✗ Missing GOOGLE_TTS_KEY")
+   if not GROQ_API_KEY:
+        sys.exit("✗ Missing GROQ_API_KEY")
 
     run(args.episode, args.dry_run)
