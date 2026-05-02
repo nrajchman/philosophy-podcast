@@ -76,61 +76,65 @@ jobs:
                   print(f"✓ Marked episode {ep_num} as done")
           EOF
 
-      - name: Upload script to Google Drive
+      - name: Publish script to GitHub Pages
         env:
-          GDRIVE_CREDENTIALS: ${{ secrets.GDRIVE_CREDENTIALS }}
-          GDRIVE_FOLDER_ID:   ${{ secrets.GDRIVE_FOLDER_ID }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          pip install google-api-python-client google-auth -q
           python - <<'EOF'
-          import os
-          import json
+          import os, json, subprocess
           from pathlib import Path
-          from googleapiclient.discovery import build
-          from googleapiclient.http import MediaFileUpload
-          from google.oauth2.service_account import Credentials
 
-          # Auth
-          creds_json = json.loads(os.environ["GDRIVE_CREDENTIALS"])
-          creds = Credentials.from_service_account_info(
-              creds_json,
-              scopes=["https://www.googleapis.com/auth/drive"]
-          )
-          service = build("drive", "v3", credentials=creds)
-          folder_id = os.environ["GDRIVE_FOLDER_ID"]
-
-          # Find latest script
           scripts = sorted(Path("episodes").glob("*_script.txt"))
           if not scripts:
               print("No script found"); exit(0)
 
           script_path = scripts[-1]
-          ep_num = script_path.stem.replace("_script", "")[2:]
-          file_name = f"Episodio {int(ep_num):02d} — {script_path.stem.replace(f'ep{ep_num}_script', '').strip()}.txt"
+          script_text = script_path.read_text(encoding="utf-8")
+          ep_num = int(script_path.stem.replace("_script","")[2:])
 
-          # Check if file already exists and delete it
-          results = service.files().list(
-              q=f"name='{script_path.name}' and '{folder_id}' in parents and trashed=false",
-              fields="files(id)"
-          ).execute()
-          for f in results.get("files", []):
-              service.files().delete(fileId=f["id"]).execute()
+          # Create docs folder for GitHub Pages
+          docs = Path("docs")
+          docs.mkdir(exist_ok=True)
 
-          # Upload
-          media = MediaFileUpload(str(script_path), mimetype="text/plain")
-          file_meta = {"name": script_path.name, "parents": [folder_id]}
-          uploaded = service.files().create(
-              body=file_meta,
-              media_body=media,
-              fields="id,webViewLink"
-          ).execute()
+          # Save script as HTML page readable by NotebookLM
+          html = f"""<!DOCTYPE html>
+          <html><head><meta charset="utf-8">
+          <title>Episodio {ep_num}</title>
+          </head><body>
+          <pre style="white-space:pre-wrap;font-family:Georgia;max-width:800px;margin:40px auto;line-height:1.8">
+          {script_text}
+          </pre>
+          </body></html>"""
 
-          print(f"✓ Uploaded to Drive: {uploaded.get('webViewLink')}")
+          (docs / f"ep{ep_num:02d}.html").write_text(html, encoding="utf-8")
 
-          # Save link for email step
-          Path("episodes/drive_link.txt").write_text(uploaded.get("webViewLink", ""))
+          # Update index with all episodes
+          all_eps = []
+          for f in sorted(docs.glob("ep*.html")):
+              num = int(f.stem[2:])
+              all_eps.append(f'<li><a href="{f.name}">Episodio {num}</a></li>')
+
+          (docs / "index.html").write_text(f"""<!DOCTYPE html>
+          <html><head><meta charset="utf-8"><title>Philosophy for Life</title></head>
+          <body style="font-family:Georgia;max-width:600px;margin:40px auto">
+          <h1>Philosophy for Life — Episodios</h1>
+          <ul style="line-height:2.5">{"".join(all_eps)}</ul>
+          </body></html>""", encoding="utf-8")
+
+          # Save URL for email
+          repo = os.environ.get("GITHUB_REPOSITORY","")
+          username = repo.split("/")[0]
+          reponame = repo.split("/")[1]
+          url = f"https://{username}.github.io/{reponame}/ep{ep_num:02d}.html"
+          Path("episodes/drive_link.txt").write_text(url)
+          print(f"✓ Script page: {url}")
           EOF
-          
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs          
       - name: Send script by email
         env:
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
