@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+  <channel>
+    <title>Philosophy for Life</title>
+    <description>Un podcast de filosofía para adultos intelectualmente curiosos: estoicismo, existencialismo y los grandes pensadores aplicados a la vida moderna.</description>
+    <language>es</language>
+    <link>https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest</link>
+    <itunes:image href="https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/cover.jpg" />
+    <itunes:author>Philosophy for Life</itunes:author>
+    <itunes:explicit>false</itunes:explicit>
+    <itunes:owner>
+      <itunes:name>Philosophy for Life</itunes:name>
+      <itunes:email>n.rajchman@gmail.com</itunes:email>
+    </itunes:owner>
+    <itunes:category text="Education" />
+    <item>
+      <title>Ep 6: Las emociones estoicas: la filosofía del clima interior</title>
+      <description>¿Qué es lo que nos hace humanos? ¿Es nuestra capacidad para razonar, para crear arte, para amar y ser amados? O tal vez es nuestra tendencia a experimentar emociones intensas, a veces abrumadoras, que nos hacen sentir vivos y conectados con el mundo ...</description>
+      <pubDate>Sat, 02 May 2026 21:10:44 +0000</pubDate>
+      <guid>https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/ep06.mp3</guid>
+      <enclosure url="https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/ep06.mp3" type="audio/mpeg" length="4008528" />
+      <itunes:duration>1200</itunes:duration>
+      <itunes:episode>6</itunes:episode>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Ep 5: Epicteto: La libertad en cadenas</title>
+      <description>La pregunta que nos planteamos hoy es la siguiente: ¿es posible ser libre en un mundo que nos rodea de cadenas, ya sean estas de naturaleza física o moral? Esta cuestión nos lleva a reflexionar sobre la concepción estoica de la libertad, y en particu...</description>
+      <pubDate>Sat, 02 May 2026 20:35:40 +0000</pubDate>
+      <guid>https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/ep05.mp3</guid>
+      <enclosure url="https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/ep05.mp3" type="audio/mpeg" length="5301792" />
+      <itunes:duration>1200</itunes:duration>
+      <itunes:episode>5</itunes:episode>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Ep 4: The Philosophy of Enough: Simplicity as a Radical Act</title>
+      <description />
+      <pubDate>Sat, 02 May 2026 20:19:00 +0000</pubDate>
+      <guid>https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/ep04.mp3</guid>
+      <enclosure url="https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/ep04.mp3" type="audio/mpeg" length="0" />
+      <itunes:duration>1200</itunes:duration>
+      <itunes:episode>4</itunes:episode>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Ep 3: Epicurus: The Misunderstood Philosopher of Pleasure</title>
+      <description />
+      <pubDate>Sat, 02 May 2026 15:53:53 +0000</pubDate>
+      <guid>https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/ep03.mp3</guid>
+      <enclosure url="https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/ep03.mp3" type="audio/mpeg" length="0" />
+      <itunes:duration>1200</itunes:duration>
+      <itunes:episode>3</itunes:episode>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Ep 2: Self-Knowledge: The Most Underrated Executive Skill</title>
+      <description />
+      <pubDate>Sat, 02 May 2026 15:29:14 +0000</pubDate>
+      <guid>https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/ep02.mp3</guid>
+      <enclosure url="https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/ep02.mp3" type="audio/mpeg" length="0" />
+      <itunes:duration>1200</itunes:duration>
+      <itunes:episode>2</itunes:episode>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
+      <title>Ep 1: Socrates: The Unexamined Life Is Not Worth Living</title>
+      <description>Imagine yourself walking into a high-stakes board meeting, surrounded by colleagues who are all nodding in agreement, yet you can't shake off the feeling that something is off. The numbers look good, the strategy seems solid, but there's a nagging se...</description>
+      <pubDate>Wed, 29 Apr 2026 12:24:45 +0000</pubDate>
+      <guid>https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/ep01.mp3</guid>
+      <enclosure url="https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/ep01.mp3" type="audio/mpeg" length="4123008" />
+      <itunes:duration>1200</itunes:duration>
+      <itunes:episode>1</itunes:episode>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+  </channel>
+</rss>
