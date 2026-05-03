@@ -24,8 +24,8 @@ PODCAST_TITLE    = "Philosophy for Life"
 PODCAST_DESC     = "Un podcast de filosofía para adultos intelectualmente curiosos: estoicismo, existencialismo y los grandes pensadores aplicados a la vida moderna."
 PODCAST_AUTHOR   = "Philosophy for Life"
 PODCAST_EMAIL    = "n.rajchman@gmail.com"
-PODCAST_BASE_URL = "https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest"
-PODCAST_IMAGE    = "https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/cover.jpg"
+PODCAST_BASE_URL = "https://nrajchman.github.io/philosophy-podcast/episodes"
+PODCAST_IMAGE    = "https://nrajchman.github.io/philosophy-podcast/cover.jpg"
 PODCAST_LANGUAGE = "es"
 
 # ── Episode plan ──────────────────────────────────────────────────────────────
