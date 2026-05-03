@@ -14,6 +14,17 @@
     </itunes:owner>
     <itunes:category text="Education" />
     <item>
+      <title>Ep 7: Marco Aurelio: la filosofía como forma de vida</title>
+      <description>¿Qué es lo que nos lleva a buscar refugio en las palabras de un hombre que vivió hace casi dos mil años? ¿Qué es lo que nos atrae de la figura de Marco Aurelio, el emperador filósofo que gobernó el Imperio Romano con sabiduría y justicia? Tal vez sea...</description>
+      <pubDate>Sun, 03 May 2026 23:29:35 +0000</pubDate>
+      <guid>https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/ep07.mp3</guid>
+      <enclosure url="https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/ep07.mp3" type="audio/mpeg" length="5202144" />
+      <itunes:duration>1200</itunes:duration>
+      <itunes:episode>7</itunes:episode>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
       <title>Ep 6: Las emociones estoicas: la filosofía del clima interior</title>
       <description>¿Qué es lo que nos hace humanos? ¿Es nuestra capacidad para razonar, para crear arte, para amar y ser amados? O tal vez es nuestra tendencia a experimentar emociones intensas, a veces abrumadoras, que nos hacen sentir vivos y conectados con el mundo ...</description>
       <pubDate>Sat, 02 May 2026 21:10:44 +0000</pubDate>
