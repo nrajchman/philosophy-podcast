@@ -54,31 +54,33 @@ jobs:
           done
           [ -f feed.xml ] && gh release upload episodes-latest feed.xml
           echo "✓ Upload complete"
-      - name: Publish feed.xml to GitHub Pages
+      - name: Publish feed and audio to GitHub Pages
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           
-          # Save feed.xml to temp
+          # Save files to temp
           cp feed.xml /tmp/feed.xml
+          cp -r episodes /tmp/episodes
           
-          # Remove local feed.xml so checkout doesn't conflict
-          rm feed.xml
+          # Remove to avoid checkout conflict
+          rm -rf feed.xml episodes
           
           git fetch origin gh-pages
           git checkout gh-pages
           
-          # Restore from temp
+          # Restore files
           cp /tmp/feed.xml feed.xml
+          mkdir -p episodes
+          cp /tmp/episodes/*.mp3 episodes/ 2>/dev/null || true
           
-          git add feed.xml
-          git commit -m "Update feed.xml" --allow-empty
+          git add feed.xml episodes/
+          git commit -m "Update episodes" --allow-empty
           git push origin gh-pages
           
           git checkout main
-
       - name: Save metadata cache
         if: always()
         uses: actions/cache@v4
