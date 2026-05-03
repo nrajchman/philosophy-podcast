@@ -4,8 +4,8 @@
     <title>Philosophy for Life</title>
     <description>Un podcast de filosofía para adultos intelectualmente curiosos: estoicismo, existencialismo y los grandes pensadores aplicados a la vida moderna.</description>
     <language>es</language>
-    <link>https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest</link>
-    <itunes:image href="https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/cover.jpg" />
+    <link>https://nrajchman.github.io/philosophy-podcast/episodes</link>
+    <itunes:image href="https://nrajchman.github.io/philosophy-podcast/cover.jpg" />
     <itunes:author>Philosophy for Life</itunes:author>
     <itunes:explicit>false</itunes:explicit>
     <itunes:owner>
@@ -14,11 +14,22 @@
     </itunes:owner>
     <itunes:category text="Education" />
     <item>
+      <title>Ep 8: Séneca: Sobre la brevedad de la vida</title>
+      <description>La pregunta que ha intrigado a filósofos y pensadores a lo largo de los siglos es, sin duda, la de la naturaleza del tiempo y su relación con la mortalidad humana. ¿Es la vida un regalo precioso que debemos aprovechar al máximo, o simplemente un brev...</description>
+      <pubDate>Sun, 03 May 2026 23:47:26 +0000</pubDate>
+      <guid>https://nrajchman.github.io/philosophy-podcast/episodes/ep08.mp3</guid>
+      <enclosure url="https://nrajchman.github.io/philosophy-podcast/episodes/ep08.mp3" type="audio/mpeg" length="3471408" />
+      <itunes:duration>1200</itunes:duration>
+      <itunes:episode>8</itunes:episode>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+    <item>
       <title>Ep 7: Marco Aurelio: la filosofía como forma de vida</title>
       <description>¿Qué es lo que nos lleva a buscar refugio en las palabras de un hombre que vivió hace casi dos mil años? ¿Qué es lo que nos atrae de la figura de Marco Aurelio, el emperador filósofo que gobernó el Imperio Romano con sabiduría y justicia? Tal vez sea...</description>
       <pubDate>Sun, 03 May 2026 23:29:35 +0000</pubDate>
-      <guid>https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/ep07.mp3</guid>
-      <enclosure url="https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/ep07.mp3" type="audio/mpeg" length="5202144" />
+      <guid>https://nrajchman.github.io/philosophy-podcast/episodes/ep07.mp3</guid>
+      <enclosure url="https://nrajchman.github.io/philosophy-podcast/episodes/ep07.mp3" type="audio/mpeg" length="5202144" />
       <itunes:duration>1200</itunes:duration>
       <itunes:episode>7</itunes:episode>
       <itunes:episodeType>full</itunes:episodeType>
@@ -28,8 +39,8 @@
       <title>Ep 6: Las emociones estoicas: la filosofía del clima interior</title>
       <description>¿Qué es lo que nos hace humanos? ¿Es nuestra capacidad para razonar, para crear arte, para amar y ser amados? O tal vez es nuestra tendencia a experimentar emociones intensas, a veces abrumadoras, que nos hacen sentir vivos y conectados con el mundo ...</description>
       <pubDate>Sat, 02 May 2026 21:10:44 +0000</pubDate>
-      <guid>https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/ep06.mp3</guid>
-      <enclosure url="https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/ep06.mp3" type="audio/mpeg" length="4008528" />
+      <guid>https://nrajchman.github.io/philosophy-podcast/episodes/ep06.mp3</guid>
+      <enclosure url="https://nrajchman.github.io/philosophy-podcast/episodes/ep06.mp3" type="audio/mpeg" length="4008528" />
       <itunes:duration>1200</itunes:duration>
       <itunes:episode>6</itunes:episode>
       <itunes:episodeType>full</itunes:episodeType>
@@ -39,8 +50,8 @@
       <title>Ep 5: Epicteto: La libertad en cadenas</title>
       <description>La pregunta que nos planteamos hoy es la siguiente: ¿es posible ser libre en un mundo que nos rodea de cadenas, ya sean estas de naturaleza física o moral? Esta cuestión nos lleva a reflexionar sobre la concepción estoica de la libertad, y en particu...</description>
       <pubDate>Sat, 02 May 2026 20:35:40 +0000</pubDate>
-      <guid>https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/ep05.mp3</guid>
-      <enclosure url="https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/ep05.mp3" type="audio/mpeg" length="5301792" />
+      <guid>https://nrajchman.github.io/philosophy-podcast/episodes/ep05.mp3</guid>
+      <enclosure url="https://nrajchman.github.io/philosophy-podcast/episodes/ep05.mp3" type="audio/mpeg" length="5301792" />
       <itunes:duration>1200</itunes:duration>
       <itunes:episode>5</itunes:episode>
       <itunes:episodeType>full</itunes:episodeType>
@@ -50,8 +61,8 @@
       <title>Ep 4: The Philosophy of Enough: Simplicity as a Radical Act</title>
       <description />
       <pubDate>Sat, 02 May 2026 20:19:00 +0000</pubDate>
-      <guid>https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/ep04.mp3</guid>
-      <enclosure url="https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/ep04.mp3" type="audio/mpeg" length="0" />
+      <guid>https://nrajchman.github.io/philosophy-podcast/episodes/ep04.mp3</guid>
+      <enclosure url="https://nrajchman.github.io/philosophy-podcast/episodes/ep04.mp3" type="audio/mpeg" length="0" />
       <itunes:duration>1200</itunes:duration>
       <itunes:episode>4</itunes:episode>
       <itunes:episodeType>full</itunes:episodeType>
@@ -61,8 +72,8 @@
       <title>Ep 3: Epicurus: The Misunderstood Philosopher of Pleasure</title>
       <description />
       <pubDate>Sat, 02 May 2026 15:53:53 +0000</pubDate>
-      <guid>https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/ep03.mp3</guid>
-      <enclosure url="https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/ep03.mp3" type="audio/mpeg" length="0" />
+      <guid>https://nrajchman.github.io/philosophy-podcast/episodes/ep03.mp3</guid>
+      <enclosure url="https://nrajchman.github.io/philosophy-podcast/episodes/ep03.mp3" type="audio/mpeg" length="0" />
       <itunes:duration>1200</itunes:duration>
       <itunes:episode>3</itunes:episode>
       <itunes:episodeType>full</itunes:episodeType>
@@ -72,8 +83,8 @@
       <title>Ep 2: Self-Knowledge: The Most Underrated Executive Skill</title>
       <description />
       <pubDate>Sat, 02 May 2026 15:29:14 +0000</pubDate>
-      <guid>https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/ep02.mp3</guid>
-      <enclosure url="https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/ep02.mp3" type="audio/mpeg" length="0" />
+      <guid>https://nrajchman.github.io/philosophy-podcast/episodes/ep02.mp3</guid>
+      <enclosure url="https://nrajchman.github.io/philosophy-podcast/episodes/ep02.mp3" type="audio/mpeg" length="0" />
       <itunes:duration>1200</itunes:duration>
       <itunes:episode>2</itunes:episode>
       <itunes:episodeType>full</itunes:episodeType>
@@ -83,8 +94,8 @@
       <title>Ep 1: Socrates: The Unexamined Life Is Not Worth Living</title>
       <description>Imagine yourself walking into a high-stakes board meeting, surrounded by colleagues who are all nodding in agreement, yet you can't shake off the feeling that something is off. The numbers look good, the strategy seems solid, but there's a nagging se...</description>
       <pubDate>Wed, 29 Apr 2026 12:24:45 +0000</pubDate>
-      <guid>https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/ep01.mp3</guid>
-      <enclosure url="https://github.com/nrajchman/philosophy-podcast/releases/download/episodes-latest/ep01.mp3" type="audio/mpeg" length="4123008" />
+      <guid>https://nrajchman.github.io/philosophy-podcast/episodes/ep01.mp3</guid>
+      <enclosure url="https://nrajchman.github.io/philosophy-podcast/episodes/ep01.mp3" type="audio/mpeg" length="4123008" />
       <itunes:duration>1200</itunes:duration>
       <itunes:episode>1</itunes:episode>
       <itunes:episodeType>full</itunes:episodeType>
