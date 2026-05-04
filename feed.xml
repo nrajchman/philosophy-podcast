@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+  <channel>
+    <title>Philosophy for Life</title>
+    <description>Un podcast de filosofía para adultos intelectualmente curiosos: estoicismo, existencialismo y los grandes pensadores aplicados a la vida moderna.</description>
+    <language>es</language>
+    <link>https://nrajchman.github.io/philosophy-podcast/episodes</link>
+    <itunes:image href="https://nrajchman.github.io/philosophy-podcast/cover.jpg" />
+    <itunes:author>Philosophy for Life</itunes:author>
+    <itunes:explicit>false</itunes:explicit>
+    <itunes:owner>
+      <itunes:name>Philosophy for Life</itunes:name>
+      <itunes:email>n.rajchman@gmail.com</itunes:email>
+    </itunes:owner>
+    <itunes:category text="Education" />
+    <item>
+      <title>Ep 1: Sócrates: La vida sin examen no merece vivirse</title>
+      <description>¿Qué significa vivir una vida plenamente examinada, cuando el propio examen se convierte en la fuente de la mayor inquietud y la más profunda reflexión? Esta pregunta nos lleva directamente al corazón de la filosofía de Sócrates, un personaje que, a ...</description>
+      <pubDate>Mon, 04 May 2026 00:06:22 +0000</pubDate>
+      <guid>https://nrajchman.github.io/philosophy-podcast/episodes/ep01.mp3</guid>
+      <enclosure url="https://nrajchman.github.io/philosophy-podcast/episodes/ep01.mp3" type="audio/mpeg" length="3946320" />
+      <itunes:duration>1200</itunes:duration>
+      <itunes:episode>1</itunes:episode>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+  </channel>
+</rss>
