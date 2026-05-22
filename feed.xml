@@ -15,10 +15,10 @@
     <itunes:category text="Education" />
     <item>
       <title>Ep 1: Sócrates: La vida sin examen no merece vivirse</title>
-      <description>¿Qué significa vivir una vida examinada, y por qué esta pregunta parece tan ajena a nuestra existencia diaria? En un mundo donde la velocidad y la eficiencia se han convertido en los valores supremos, la idea de detenerse a reflexionar sobre nuestras...</description>
-      <pubDate>Thu, 21 May 2026 18:17:06 +0000</pubDate>
+      <description>¿Es posible vivir una vida verdaderamente filosófica en un mundo que parece valorar cada vez más la eficiencia y la productividad sobre la reflexión y el cuestionamiento? La pregunta puede parecer retórica, pero es precisamente la que nos lleva a con...</description>
+      <pubDate>Fri, 22 May 2026 17:29:11 +0000</pubDate>
       <guid>https://nrajchman.github.io/philosophy-podcast/episodes/ep01.mp3</guid>
-      <enclosure url="https://nrajchman.github.io/philosophy-podcast/episodes/ep01.mp3" type="audio/mpeg" length="4546656" />
+      <enclosure url="https://nrajchman.github.io/philosophy-podcast/episodes/ep01.mp3" type="audio/mpeg" length="2886768" />
       <itunes:duration>1200</itunes:duration>
       <itunes:episode>1</itunes:episode>
       <itunes:episodeType>full</itunes:episodeType>
