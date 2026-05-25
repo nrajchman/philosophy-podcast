@@ -15,10 +15,10 @@
     <itunes:category text="Education" />
     <item>
       <title>Ep 1: Sócrates: La vida sin examen no merece vivirse</title>
-      <description>¿Qué significa vivir una vida examinada, y por qué Sócrates, un hombre que vivió en Atenas hace más de dos milenios, sigue siendo un modelo de vida filosófica que nos desafía y nos inspira? Esta pregunta nos lleva a una paradoja fundamental: Sócrates...</description>
-      <pubDate>Sun, 24 May 2026 14:54:10 +0000</pubDate>
+      <description>¿Qué significa vivir una vida examinada, y por qué esta pregunta sigue siendo tan perturbadora y desafiante en la actualidad? La figura de Sócrates se erige como un modelo de vida filosófica que nos invita a cuestionar nuestros supuestos y a buscar l...</description>
+      <pubDate>Mon, 25 May 2026 17:22:57 +0000</pubDate>
       <guid>https://nrajchman.github.io/philosophy-podcast/episodes/ep01.mp3</guid>
-      <enclosure url="https://nrajchman.github.io/philosophy-podcast/episodes/ep01.mp3" type="audio/mpeg" length="5300784" />
+      <enclosure url="https://nrajchman.github.io/philosophy-podcast/episodes/ep01.mp3" type="audio/mpeg" length="4382208" />
       <itunes:duration>1200</itunes:duration>
       <itunes:episode>1</itunes:episode>
       <itunes:episodeType>full</itunes:episodeType>
